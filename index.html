@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Price Lab: Pricing Products and Services</title>
+<meta name="description" content="Interactive project-based lesson on pricing products and services: approaches, demand, break-even, objectives, constraints, and setting a final price.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<!--
+  PRICE LAB — Chapter 11: Pricing Products and Services
+  Aligned to Kerin & Hartley, Marketing: The Core (2024 Release), Chapter 11.
+  Single-file, no build step. Drop into a GitHub repo as index.html and enable GitHub Pages.
+
+  EDITING VIDEOS: see the VIDEOS object near the top of the <script>. Each video has a YouTube id.
+  Set id: "" to hide the player and show only the written "Story in brief" summary
+  (useful where YouTube is blocked). Preview every video before class.
+-->
+<style>
+:root{
+  --navy:#0B1D3A; --navy-2:#13294F; --navy-3:#1E3A6B;
+  --gold:#D9AE45; --gold-soft:#F3E3B5; --gold-ink:#7A5B0C;
+  --ivory:#FAF7F0; --paper:#FFFFFF; --ink:#18202E; --muted:#4A5568;
+  --line:#D9D3C3; --ok:#1E6B43; --ok-bg:#E3F2E8; --bad:#A12A2A; --bad-bg:#FBE7E5;
+  --info-bg:#E8EEF8; --focus:#1A5FD0;
+  --radius:16px; --shadow:0 10px 30px rgba(11,29,58,.12);
+  --fs:1rem;
+}
+html.fs-1{font-size:112.5%} html.fs-2{font-size:125%}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.6;font-size:var(--fs)}
+h1,h2,h3{font-family:"Playfair Display",Georgia,"Times New Roman",serif;line-height:1.2;color:var(--navy);margin:0 0 .5em}
+h1,.h1{font-size:clamp(2rem,4.5vw,3.2rem)} h2{font-size:clamp(1.6rem,3vw,2.2rem)} h3{font-size:1.3rem}
+p{margin:0 0 1em}
+a{color:#1846A3} a:hover{color:var(--navy)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--gold);color:var(--navy);padding:.6em 1em;border-radius:8px;font-weight:700;z-index:100}
+.skip:focus{left:8px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+svg.ic{width:1.25em;height:1.25em;vertical-align:-.25em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Header */
+.topbar{background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:.6rem 1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:"Playfair Display",serif;font-weight:800;font-size:1.25rem;color:#fff;text-decoration:none}
+.brand .tag{color:var(--gold)}
+.tools{margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap}
+.tbtn{background:transparent;border:1.5px solid rgba(255,255,255,.45);color:#fff;border-radius:999px;padding:.35rem .8rem;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem}
+.tbtn:hover{border-color:var(--gold);color:var(--gold)}
+.tbtn[aria-pressed="true"]{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.progress{height:6px;background:var(--navy-3)}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#F6D78A);width:0;transition:width .5s ease}
+
+/* Layout */
+.wrap{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem;display:grid;grid-template-columns:260px 1fr;gap:1.5rem}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+nav.steps{position:sticky;top:5.2rem;align-self:start;min-width:0}
+@media (max-width:900px){nav.steps{position:static}}
+nav.steps ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.35rem}
+@media (max-width:900px){nav.steps ol{flex-direction:row;overflow-x:auto;padding-bottom:.4rem}}
+nav.steps button{width:100%;text-align:left;display:flex;align-items:center;gap:.6rem;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:.55rem .7rem;font:inherit;font-size:.92rem;color:var(--ink);cursor:pointer;white-space:nowrap}
+nav.steps button:hover{border-color:var(--navy-3)}
+nav.steps button[aria-current="step"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+nav.steps .num{width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);color:var(--navy);font-weight:700;font-size:.8rem;flex:none}
+nav.steps button[aria-current="step"] .num{background:var(--gold)}
+nav.steps .done .num{background:var(--ok);color:#fff}
+
+main{min-width:0}
+section.panel{display:none;animation:rise .45s ease both}
+section.panel.active{display:block}
+@keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+.card.dark{background:var(--navy);color:#EEF2FA;border-color:var(--navy)}
+.card.dark h1,.card.dark h2,.card.dark h3{color:#fff}
+.eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:600;color:var(--gold-ink);margin-bottom:.5rem}
+.card.dark .eyebrow{color:var(--gold)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.pill{display:inline-block;background:var(--gold-soft);color:var(--navy);border-radius:999px;padding:.15rem .65rem;font-size:.8rem;font-weight:600;margin:.15rem .25rem .15rem 0}
+.btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--navy);color:#fff;border:2px solid var(--navy);border-radius:12px;padding:.65rem 1.1rem;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s ease, background .2s}
+.btn:hover{background:var(--navy-3);transform:translateY(-1px)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.btn.gold:hover{background:#E8C164}
+.btn.ghost{background:transparent;color:var(--navy)}
+.btn.ghost:hover{background:var(--info-bg)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.pager{display:flex;justify-content:space-between;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:1.5rem;align-items:center}
+@media (max-width:700px){.hero{grid-template-columns:1fr}}
+.hero-art{display:grid;place-items:center}
+.swing{transform-origin:50% 8%;animation:swing 3.2s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.dq{border-left:5px solid var(--gold);padding:.8rem 1rem;background:rgba(217,174,69,.12);border-radius:0 12px 12px 0;font-family:"Playfair Display",serif;font-size:1.25rem;color:#fff}
+.goals{margin:0;padding-left:1.2rem}
+.goals li{margin:.3rem 0}
+label.field{display:block;font-weight:600;margin-bottom:.3rem}
+input[type=text],input[type=number],textarea,select{font:inherit;color:var(--ink);background:#fff;border:2px solid #8A93A6;border-radius:10px;padding:.55rem .7rem;width:100%}
+textarea{min-height:5.5rem;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--focus)}
+.role{display:flex;gap:.8rem;align-items:flex-start;background:var(--info-bg);border-radius:12px;padding:1rem}
+.role svg.ic{width:2rem;height:2rem;color:var(--navy)}
+
+/* Teacher notes */
+.tnote{display:none;border:2px dashed var(--gold-ink);background:#FFF9E8;border-radius:12px;padding:.9rem 1rem;margin:0 0 1.25rem}
+.tnote strong:first-child{display:flex;align-items:center;gap:.4rem;color:var(--gold-ink)}
+body.teacher .tnote{display:block}
+
+/* Warm up */
+.bottle{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;padding:.8rem;border:1px solid var(--line);border-radius:12px;background:#fff}
+.bottle .where{display:flex;gap:.6rem;align-items:center;font-weight:600}
+.bottle .where svg.ic{width:1.8rem;height:1.8rem;color:var(--navy-3)}
+.bottle output{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.15rem;min-width:4.5ch;text-align:right;color:var(--navy)}
+@media (max-width:560px){.bottle{grid-template-columns:1fr}.bottle output{text-align:left}}
+input[type=range]{width:100%;accent-color:var(--navy)}
+.reveal{display:none}
+.reveal.show{display:block;animation:rise .4s ease both}
+.equation{font-family:"IBM Plex Mono",monospace;font-size:1.2rem;background:var(--navy);color:#fff;border-radius:12px;padding:1rem;text-align:center;margin:1rem 0}
+.equation b{color:var(--gold)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1rem;align-items:center}
+@media (max-width:560px){.match{grid-template-columns:1fr}}
+
+/* Feedback */
+.fb{border-radius:10px;padding:.7rem .9rem;margin-top:.6rem;display:none}
+.fb.show{display:block;animation:rise .3s ease both}
+.fb.ok{background:var(--ok-bg);color:#123F28;border-left:5px solid var(--ok)}
+.fb.bad{background:var(--bad-bg);color:#5E1414;border-left:5px solid var(--bad)}
+.fb.info{background:var(--info-bg);color:var(--navy);border-left:5px solid var(--navy-3)}
+
+/* Tabs */
+[role=tablist]{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+[role=tab]{font:inherit;font-weight:600;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:.45rem 1rem;cursor:pointer;display:inline-flex;gap:.4rem;align-items:center}
+[role=tab][aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+[role=tabpanel]{animation:rise .35s ease both}
+
+/* Strategy cards */
+.scard{border:1px solid var(--line);border-radius:14px;padding:1rem;background:#fff;position:relative;overflow:hidden;transition:transform .2s, box-shadow .2s}
+.scard:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.scard::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--gold)}
+.scard h3{font-size:1.1rem;margin-top:.2rem;display:flex;gap:.45rem;align-items:center}
+.scard .ex{font-size:.92rem;color:var(--muted);margin:0}
+.scard .ex b{color:var(--navy)}
+
+/* Video */
+.video{border-radius:14px;overflow:hidden;background:var(--navy);color:#fff;margin:1rem 0}
+.video .frame{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 30% 30%,var(--navy-3),var(--navy))}
+.video .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video .poster{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;font:inherit;padding:1rem;text-align:center}
+.video .poster .play{width:72px;height:72px;flex:none;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;transition:transform .2s}
+.video .poster:hover .play,.video .poster:focus-visible .play{transform:scale(1.1)}
+.video .poster .play svg{width:34px;height:34px;fill:currentColor;stroke:none;margin-left:4px}
+.video .poster .vt{font-family:"Playfair Display",serif;font-size:1.25rem;font-weight:700;max-width:30ch}
+.video .poster .co{font-family:"IBM Plex Mono",monospace;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.video .meta{padding:.9rem 1rem;background:var(--navy-2)}
+.video .meta p{margin:.2rem 0 .5rem;color:#DCE3F0}
+.video .meta a{color:var(--gold)}
+.video details{margin-top:.3rem}
+.video summary{cursor:pointer;font-weight:600;color:#fff}
+.video.noembed .frame{display:none}
+
+/* Classifier */
+.classify{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem}
+.classify li{border:1px solid var(--line);border-radius:12px;padding:.8rem;background:#fff}
+.classify .item{font-weight:600;margin-bottom:.5rem;display:flex;gap:.5rem;align-items:flex-start}
+.choices{display:flex;flex-wrap:wrap;gap:.4rem}
+.choice{font:inherit;font-size:.88rem;font-weight:600;border:2px solid var(--navy-3);color:var(--navy);background:#fff;border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.choice:hover{background:var(--info-bg)}
+.choice[aria-pressed="true"].right{background:var(--ok);border-color:var(--ok);color:#fff}
+.choice[aria-pressed="true"].wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.score{font-family:"IBM Plex Mono",monospace;font-weight:600;background:var(--gold-soft);color:var(--navy);padding:.3rem .7rem;border-radius:8px}
+
+/* Number lab */
+.chart{width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:12px}
+.chart text{font-family:"IBM Plex Sans",sans-serif;font-size:13px;fill:#2D3748}
+.sliders{display:grid;gap:.8rem}
+.slider label{display:flex;justify-content:space-between;font-weight:600}
+.slider output{font-family:"IBM Plex Mono",monospace;color:var(--navy)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-top:1rem}
+.stat{background:var(--navy);color:#fff;border-radius:12px;padding:.7rem .8rem}
+.stat .k{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-soft)}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:1.25rem;font-weight:600}
+.stat.pos .v{color:#9BE3B6} .stat.neg .v{color:#FFB4A8}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:.4rem .5rem;text-align:right}
+th{background:var(--navy);color:#fff;text-align:center}
+td:first-child{text-align:left}
+caption{caption-side:top;text-align:left;font-weight:600;padding-bottom:.4rem}
+.tablewrap{overflow-x:auto}
+.formula{font-family:"IBM Plex Mono",monospace;background:var(--info-bg);border-radius:8px;padding:.15rem .5rem;display:inline-block;max-width:100%;margin:.15rem 0}
+
+/* Flip cards */
+.flip{perspective:1000px;border:0;background:transparent;padding:0;font:inherit;cursor:pointer;min-height:170px;text-align:left;width:100%}
+.flip .inner{position:relative;width:100%;height:100%;min-height:170px;transition:transform .6s;transform-style:preserve-3d}
+.flip[aria-pressed="true"] .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:1rem;display:flex;flex-direction:column;justify-content:center;gap:.35rem}
+.flip .front{background:var(--navy);color:#fff}
+.flip .front b{font-family:"Playfair Display",serif;font-size:1.2rem;color:var(--gold)}
+.flip .front small{color:#C8D2E6}
+.flip .back{background:#fff;border:2px solid var(--gold);color:var(--ink);transform:rotateY(180deg);font-size:.92rem}
+
+/* Process */
+.process{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;counter-reset:s}
+@media (max-width:760px){.process{grid-template-columns:1fr}}
+.process .stp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1rem;position:relative}
+.process .stp::before{counter-increment:s;content:"Step " counter(s);font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--navy);padding:.15rem .5rem;border-radius:6px;display:inline-block;margin-bottom:.5rem}
+
+/* Scenarios */
+.scen-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.scen-nav button{font:inherit;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:.4rem;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:.45rem .8rem;cursor:pointer}
+.scen-nav button[aria-current="true"]{border-color:var(--navy);background:var(--navy);color:#fff}
+.scen-nav button .chk{color:var(--ok)}
+.scen-nav button[aria-current="true"] .chk{color:#9BE3B6}
+.case-head{display:flex;gap:1rem;align-items:center;margin-bottom:.8rem}
+.case-badge{width:64px;height:64px;border-radius:16px;background:var(--navy);color:var(--gold);display:grid;place-items:center;flex:none}
+.case-badge svg.ic{width:34px;height:34px}
+.case-head .co{font-family:"IBM Plex Mono",monospace;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-ink);font-weight:600}
+.case-head h3{margin:0;font-size:1.5rem}
+.brief{background:var(--info-bg);border-radius:12px;padding:1rem;margin-bottom:1rem}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:1rem;margin:0 0 1rem}
+legend{font-weight:700;padding:0 .4rem;color:var(--navy)}
+.opt{display:flex;gap:.6rem;align-items:flex-start;padding:.55rem .7rem;border:2px solid var(--line);border-radius:10px;margin:.4rem 0;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--navy-3)}
+.opt input{margin-top:.35rem;accent-color:var(--navy);width:1.1rem;height:1.1rem;flex:none}
+.opt.sel-ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.sel-bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt.sel-info{border-color:var(--navy-3);background:var(--info-bg)}
+.tags{margin-top:.5rem}
+
+/* Debrief */
+.record{list-style:none;padding:0;margin:0;display:grid;gap:.5rem}
+.record li{display:flex;gap:.6rem;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:.55rem .8rem}
+.record .st{margin-left:auto;font-weight:600;font-size:.88rem}
+.big{background:var(--navy);color:#fff;border-radius:14px;padding:1rem}
+.big b{color:var(--gold);font-family:"Playfair Display",serif;font-size:1.1rem;display:block;margin-bottom:.2rem}
+
+/* Quiz */
+.qnum{font-family:"IBM Plex Mono",monospace;color:var(--gold-ink)}
+.quiz-result{font-size:1.2rem;font-weight:700}
+
+/* Certificate */
+.cert-wrap{display:grid;place-items:center}
+.cert{width:100%;max-width:900px;aspect-ratio:1.414/1;background:#FFFDF7;border:14px solid var(--navy);outline:3px solid var(--gold);outline-offset:-26px;border-radius:6px;padding:2.6rem 3rem;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.4rem;box-shadow:var(--shadow)}
+@media (max-width:640px){.cert{aspect-ratio:auto;padding:2.2rem 1.4rem;border-width:8px;outline-offset:-18px}}
+.cert .seal{position:absolute;right:2.4rem;bottom:2.2rem;width:96px;height:96px}
+@media (max-width:640px){.cert .seal{position:static;margin-top:.6rem}}
+.cert .ctitle{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(1.6rem,4vw,2.6rem);color:var(--navy);margin:0}
+.cert .cname{font-family:"Playfair Display",serif;font-style:italic;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold-ink);border-bottom:2px solid var(--gold);padding:0 1.5rem .2rem;margin:.4rem 0}
+.cert .small{font-family:"IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;color:var(--muted)}
+.cert .sig{display:flex;gap:3rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap}
+.cert .sig div{border-top:1.5px solid var(--navy);padding-top:.3rem;min-width:180px;font-size:.85rem;color:var(--muted)}
+.locked{text-align:center;padding:2rem}
+.locked svg.ic{width:56px;height:56px;color:var(--gold-ink)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+
+footer{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 3rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  body{background:#fff}
+  body>*:not(.wrap){display:none!important}
+  .wrap{display:block;padding:0;margin:0;max-width:none}
+  nav.steps,.pager,main>*:not(#s-cert),#s-cert>*:not(#cert-area),#cert-area>*:not(#certificate-print){display:none!important}
+  section.panel{animation:none}
+  #certificate-print{display:flex;align-items:center;justify-content:center;height:7.6in;break-inside:avoid}
+  .cert{box-shadow:none;width:9.6in;max-width:9.6in;height:6.9in;aspect-ratio:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cert .seal{position:absolute}
+  @page{size:letter landscape;margin:.4in}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to lesson content</a>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8M3 21l6-6M7 3l4 4-3 3-4-4z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/></symbol>
+    <symbol id="i-gavel" viewBox="0 0 24 24"><path d="m14 13-8.5 8.5a2.1 2.1 0 0 1-3-3L11 10"/><path d="m16 16 6-6M8 8l6-6M9 7l8 8M21 11l-8-8"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l3 12h11l2-8H6"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 17h14M3 13l2-6h14l2 6v4H3z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 11v2M6 10v4M10 10v4"/></symbol>
+    <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M2 16l20-6-4-2-6 2-6-6H4l3 7-5 2z"/><path d="M2 20h20"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 18h18M4 8l4 4 4-7 4 7 4-4-2 10H6z"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M14 10a2 2 0 1 0 0-.01"/><path d="M9 15l-3-3c2-6 7-9 14-9 0 7-3 12-9 14z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9h-4a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4H9M12 6v2M12 16v2"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h8"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M22 21a7 7 0 0 0-4-6.3"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 21h14M3 7h18M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></symbol>
+    <symbol id="i-water" viewBox="0 0 24 24"><path d="M9 2h6M10 2v3l-2 3v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8l-2-3V2"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-fuel" viewBox="0 0 24 24"><path d="M3 22V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v18M2 22h13M14 10h2a2 2 0 0 1 2 2v4a2 2 0 0 0 4 0V8l-3-3"/><path d="M6 7h5"/></symbol>
+    <symbol id="i-stadium" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="9" ry="3"/><path d="M3 8v8c0 1.7 4 3 9 3s9-1.3 9-3V8"/></symbol>
+    <symbol id="i-school" viewBox="0 0 24 24"><path d="M2 10l10-6 10 6-10 6z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+    <symbol id="i-teacher" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="12" rx="1"/><path d="M7 21l3-6M17 21l-3-6M7 8h6"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#main" aria-label="Price Lab home">
+      <svg class="ic tag" aria-hidden="true"><use href="#i-tag"/></svg>
+      Price Lab <span class="tag" style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600">CH 11</span>
+    </a>
+    <div class="tools">
+      <button class="tbtn" id="btn-teacher" aria-pressed="false" type="button"><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Teacher notes</button>
+      <button class="tbtn" id="btn-font" type="button" aria-label="Change text size. Current: normal"><svg class="ic" aria-hidden="true"><use href="#i-text"/></svg>Text size</button>
+      <button class="tbtn" id="btn-reset" type="button"><svg class="ic" aria-hidden="true"><use href="#i-reset"/></svg>Start over</button>
+    </div>
+  </div>
+  <div class="progress" role="progressbar" aria-label="Lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar"></span></div>
+</header>
+
+<div class="wrap">
+  <nav class="steps" aria-label="Lesson sections">
+    <ol id="step-list"></ol>
+  </nav>
+
+  <main id="main" tabindex="-1">
+  <h1 class="sr-only">Price Lab: Pricing Products and Services (Chapter 11)</h1>
+
+  <!-- ===================== 0. MISSION ===================== -->
+  <section class="panel" id="s-mission" aria-labelledby="h-mission" data-title="Mission Briefing" data-icon="i-target">
+    <div class="card dark">
+      <div class="hero">
+        <div>
+          <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Chapter 11 · Pricing Products and Services</span>
+          <h2 id="h-mission" class="h1" tabindex="-1">Welcome to Price Lab</h2>
+          <p>You've just been hired as a <strong>Junior Pricing Strategist</strong>. Companies like Costco, Uber, Apple, and Energizer are about to ask for your advice. Before they do, you'll need the right tools.</p>
+          <p class="dq">Driving question: How should a company decide what to charge, and who wins or loses when it does?</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg width="220" height="240" viewBox="0 0 220 240">
+            <line x1="110" y1="0" x2="110" y2="40" stroke="#D9AE45" stroke-width="3"/>
+            <g class="swing">
+              <path d="M60 50 h100 l30 40 v130 a10 10 0 0 1 -10 10 h-140 a10 10 0 0 1 -10 -10 v-130 z" fill="#FAF7F0" stroke="#D9AE45" stroke-width="4"/>
+              <circle cx="110" cy="70" r="9" fill="#0B1D3A" stroke="#D9AE45" stroke-width="3"/>
+              <text x="110" y="140" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-weight="800" font-size="46" fill="#0B1D3A">$?.99</text>
+              <text x="110" y="180" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#7A5B0C" letter-spacing="2">WHAT'S IT WORTH?</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Suggested pacing: about 2 class periods (90–110 minutes total), or one self-paced module. Warm Up 10 min · Toolkit 20 min · Number Lab 20 min · Rules of the Game 15 min · Scenario Studio 25 min · Debrief 10 min · Quick Review 10 min. Post the driving question where everyone can see it and return to it in the Debrief. Students can work alone or in pairs; pairs share one screen and alternate who "drives."
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Learning goals</h2>
+        <p>By the end of this lesson, you will learn:</p>
+        <ol class="goals">
+          <li>What price is, why it matters, and the four approaches companies use to pick an approximate price level.</li>
+          <li>What a demand curve shows and how revenue drives pricing decisions.</li>
+          <li>How fixed and variable costs work together to set a break-even point.</li>
+          <li>The objectives companies chase and the constraints that limit the prices they can charge.</li>
+          <li>The steps a company takes to set a final price.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>Your strategist badge</h2>
+        <div class="role" style="margin-bottom:1rem">
+          <svg class="ic" aria-hidden="true"><use href="#i-users"/></svg>
+          <div>Your name appears on your Price Lab certificate at the end. Working with a partner? Enter both names.</div>
+        </div>
+        <label class="field" for="student-name">Strategist name(s)</label>
+        <input type="text" id="student-name" autocomplete="name" placeholder="e.g., Jordan Lee">
+        <p style="margin-top:1rem;font-size:.92rem;color:var(--muted)">Your progress saves in this browser automatically, so you can come back later.</p>
+        <h3 style="margin-top:1rem">How Price Lab works</h3>
+        <div class="row">
+          <span class="pill">1 · Warm Up</span><span class="pill">2 · Learn the tools</span><span class="pill">3 · Run the numbers</span><span class="pill">4 · Solve real cases</span><span class="pill">5 · Debrief and review</span><span class="pill">6 · Earn your certificate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1. WARM UP ===================== -->
+  <section class="panel" id="s-warmup" aria-labelledby="h-warmup" data-title="Warm Up" data-icon="i-bulb">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Warm Up · Critical thinking</span>
+    <h2 id="h-warmup" tabindex="-1">The Water Bottle Challenge</h2>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Have students set their prices silently, then poll the room for the highest and lowest at the stadium. Ask: "The bottle didn't change. What did?" Steer toward perceived benefits (convenience, urgency, lack of alternatives) and land on Value = Perceived benefits ÷ Price.
+    </div>
+    <div class="card">
+      <p>It's the <strong>same</strong> 16.9 oz bottle of water in all four places. Slide to show the <strong>most</strong> you would pay in each situation.</p>
+      <div id="bottles" class="sliders"></div>
+      <div class="row" style="margin-top:1rem"><button class="btn gold" id="btn-bottle" type="button"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Reveal the insight</button></div>
+      <div id="bottle-reveal" class="reveal" aria-live="polite">
+        <p style="margin-top:1rem" id="bottle-summary"></p>
+        <div class="equation" role="img" aria-label="Value equals perceived benefits divided by price">Value = <b>Perceived benefits</b> ÷ <b>Price</b></div>
+        <p><strong>Price</strong> is the money (or other considerations) exchanged for owning or using a product. <strong>Value</strong> is what you <em>get</em> compared with what you <em>pay</em>. The water didn't change. Your thirst, your options, and your situation changed the benefits you saw, so your price changed too.</p>
+        <label class="field" for="warm-reflect">Think it through: Describe a time you happily paid "too much" for something. What benefit made it worth it?</label>
+        <textarea id="warm-reflect" data-save="warmReflect"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Price wears many name tags</h3>
+      <p>You don't always call it "price." Match each name to what's being bought.</p>
+      <div class="match" id="names"></div>
+      <div class="row" style="margin-top:1rem"><button class="btn" id="btn-names" type="button"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Check my matches</button></div>
+      <div id="names-fb" class="fb" role="status"></div>
+    </div>
+
+    <div class="card">
+      <h3>Quick thinker: Is a trade a price?</h3>
+      <p>You swap your old video game for a friend's hoodie. No money changes hands. Did you pay a price?</p>
+      <div class="row" id="barter">
+        <button class="choice" type="button" data-v="yes" aria-pressed="false">Yes</button>
+        <button class="choice" type="button" data-v="no" aria-pressed="false">No</button>
+      </div>
+      <div id="barter-fb" class="fb" role="status"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. TOOLKIT ===================== -->
+  <section class="panel" id="s-toolkit" aria-labelledby="h-toolkit" data-title="The Pricing Toolkit" data-icon="i-tools">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-tools"/></svg>Explore · Concepts and definitions</span>
+    <h2 id="h-toolkit" tabindex="-1">The Pricing Toolkit</h2>
+    <p>To set an <strong>approximate price level</strong>, strategists look at four things: what buyers want (<strong>demand</strong>), what it costs (<strong>cost</strong>), what the company needs to earn (<strong>profit</strong>), and what rivals charge (<strong>competition</strong>). Pick a lens to explore its tools.</p>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Jigsaw option: assign each table one approach. Each group watches its video, then teaches the class its strategies with one new real-company example. Finish with the "Sort It!" challenge as a whole class.
+    </div>
+    <div class="card">
+      <div role="tablist" aria-label="Pricing approaches" id="approach-tabs"></div>
+      <div id="approach-panels"></div>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Challenge</span>
+      <h3>Sort It! Which approach is this?</h3>
+      <p>Each example uses one approach. Choose a lens for each. <span class="score" id="sort-score" aria-live="polite">0 / 10</span></p>
+      <ul class="classify" id="sort-list"></ul>
+    </div>
+  </section>
+
+  <!-- ===================== 3. NUMBER LAB ===================== -->
+  <section class="panel" id="s-numbers" aria-labelledby="h-numbers" data-title="Number Lab" data-icon="i-chart">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg>Explore · Demand, revenue, and cost</span>
+    <h2 id="h-numbers" tabindex="-1">Number Lab</h2>
+    <p>Great pricing ideas still have to survive the math. Run four experiments.</p>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Project the break-even simulator. Ask students to predict before moving each slider: "If rent goes up, does the break-even point move left or right?" The default values match the textbook's picture-framing store (Figure 11-6), so break-even is 400 frames.
+    </div>
+    <div class="card">
+      <div role="tablist" aria-label="Number Lab experiments" id="lab-tabs">
+        <button role="tab" id="lt-1" aria-controls="lp-1" aria-selected="true" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chart"/></svg>Demand curve</button>
+        <button role="tab" id="lt-2" aria-controls="lp-2" aria-selected="false" tabindex="-1" type="button"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Elasticity</button>
+        <button role="tab" id="lt-3" aria-controls="lp-3" aria-selected="false" tabindex="-1" type="button"><svg class="ic" aria-hidden="true"><use href="#i-calc"/></svg>Break-even simulator</button>
+        <button role="tab" id="lt-4" aria-controls="lp-4" aria-selected="false" tabindex="-1" type="button"><svg class="ic" aria-hidden="true"><use href="#i-coin"/></svg>Price premium</button>
+      </div>
+
+      <div role="tabpanel" id="lp-1" aria-labelledby="lt-1">
+        <h3>Movement along vs. shift of the demand curve</h3>
+        <p>A <strong>demand curve</strong> shows the most units buyers will purchase at each price. Red Baron frozen cheese pizza starts at <strong>$8</strong>, selling <strong>2 million</strong> a year. Demand depends on consumer tastes, the price and availability of similar products, and consumer income. Try both moves:</p>
+        <div class="row" style="margin-bottom:.8rem">
+          <button class="btn" type="button" id="dc-move"><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg>Lower the price to $6</button>
+          <button class="btn" type="button" id="dc-shift"><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg>Make demand grow (keep $8)</button>
+          <button class="btn ghost" type="button" id="dc-reset"><svg class="ic" aria-hidden="true"><use href="#i-reset"/></svg>Reset</button>
+        </div>
+        <svg class="chart" id="dc-chart" viewBox="0 0 640 380" role="img" aria-labelledby="dc-title dc-desc">
+          <title id="dc-title">Red Baron pizza demand curve</title>
+          <desc id="dc-desc">Price per unit on the vertical axis from 0 to 10 dollars, quantity in millions on the horizontal axis from 0 to 8. The curve D1 slopes downward through 8 dollars at 2 million and 6 dollars at 3 million.</desc>
+        </svg>
+        <div id="dc-fb" class="fb info show" role="status" aria-live="polite">Start point Q1: $8 per pizza, 2 million pizzas a year.</div>
+      </div>
+
+      <div role="tabpanel" id="lp-2" aria-labelledby="lt-2" hidden>
+        <h3>Price elasticity of demand</h3>
+        <p><span class="formula">Elasticity = % change in quantity demanded ÷ % change in price</span></p>
+        <div class="grid2">
+          <div class="scard"><h3><svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg>Elastic</h3><p class="ex">Buyers react <b>a lot</b>. A 1% price cut brings <b>more than</b> a 1% jump in quantity. Often products with many substitutes.</p></div>
+          <div class="scard"><h3><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Inelastic</h3><p class="ex">Buyers barely react. A 1% price cut brings <b>less than</b> a 1% jump in quantity. Necessities tend to be inelastic.</p></div>
+        </div>
+        <h3 style="margin-top:1.2rem">Elastic or inelastic? <span class="score" id="el-score" aria-live="polite">0 / 4</span></h3>
+        <ul class="classify" id="el-list"></ul>
+      </div>
+
+      <div role="tabpanel" id="lp-3" aria-labelledby="lt-3" hidden>
+        <h3>Break-even simulator: The Frame Shop</h3>
+        <p>The <strong>break-even point (BEP)</strong> is the quantity where total revenue equals total cost. <span class="formula">BEP = Fixed cost ÷ (Price − Unit variable cost)</span></p>
+        <div class="grid2">
+          <div class="sliders">
+            <div class="slider"><label for="be-p">Price per framed picture (P) <output id="be-p-o" for="be-p"></output></label><input type="range" id="be-p" min="50" max="200" step="5" value="120"></div>
+            <div class="slider"><label for="be-uvc">Unit variable cost (UVC) <output id="be-uvc-o" for="be-uvc"></output></label><input type="range" id="be-uvc" min="10" max="100" step="5" value="40"></div>
+            <div class="slider"><label for="be-fc">Fixed cost (FC): rent, salaries, insurance <output id="be-fc-o" for="be-fc"></output></label><input type="range" id="be-fc" min="8000" max="80000" step="1000" value="32000"></div>
+            <div class="slider"><label for="be-q">Quantity sold this year (Q) <output id="be-q-o" for="be-q"></output></label><input type="range" id="be-q" min="0" max="2000" step="50" value="1200"></div>
+            <p style="font-size:.9rem;color:var(--muted);margin:0"><strong>Fixed costs</strong> stay the same no matter how much you sell. <strong>Variable costs</strong> (materials, direct labor, commissions) rise with every unit. <span class="formula">TC = FC + VC</span> <span class="formula">TR = P × Q</span> <span class="formula">Profit = TR − TC</span></p>
+          </div>
+          <div>
+            <svg class="chart" id="be-chart" viewBox="0 0 520 360" role="img" aria-labelledby="be-title be-desc"><title id="be-title">Break-even chart</title><desc id="be-desc"></desc></svg>
+          </div>
+        </div>
+        <div class="stats" aria-live="polite" id="be-stats"></div>
+        <details style="margin-top:1rem"><summary style="cursor:pointer;font-weight:600">Show the chart as a table</summary><div class="tablewrap" id="be-table"></div></details>
+        <div class="card" style="margin-top:1rem;box-shadow:none;background:var(--info-bg)">
+          <h3><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Owner's challenge</h3>
+          <p>The owner wants to break even at only <strong>320 frames</strong>. Fixed cost stays at $32,000 and unit variable cost stays at $40. What price per frame does she need?</p>
+          <div class="row"><label class="sr-only" for="be-ch">Price needed in dollars</label><span aria-hidden="true">$</span><input type="number" id="be-ch" style="max-width:9rem" inputmode="decimal"><button class="btn" type="button" id="be-ch-btn">Check</button></div>
+          <div id="be-ch-fb" class="fb" role="status"></div>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="lp-4" aria-labelledby="lt-4" hidden>
+        <h3>Metric moment: Is Red Bull priced above, at, or below the market?</h3>
+        <p><span class="formula">Price premium (%) = (Brand price − Benchmark price) ÷ Benchmark price × 100</span></p>
+        <p>Use these <em>illustrative</em> numbers: Red Bull averages <strong>$2.96</strong> per can. The average for all energy drinks (the benchmark) is <strong>$2.50</strong>.</p>
+        <div class="row"><label for="pp-in" style="font-weight:600">Red Bull's price premium:</label><input type="number" id="pp-in" style="max-width:8rem" step="0.1" inputmode="decimal"><span aria-hidden="true">%</span><button class="btn" type="button" id="pp-btn">Check</button></div>
+        <div id="pp-fb" class="fb" role="status"></div>
+        <div id="pp-2" class="reveal">
+          <p style="margin-top:1rem"><strong>So Red Bull is priced…</strong></p>
+          <div class="row" id="pp-choice">
+            <button class="choice" type="button" data-v="above" aria-pressed="false">Above market</button>
+            <button class="choice" type="button" data-v="at" aria-pressed="false">At market</button>
+            <button class="choice" type="button" data-v="below" aria-pressed="false">Below market</button>
+          </div>
+          <div id="pp-fb2" class="fb" role="status"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. RULES OF THE GAME ===================== -->
+  <section class="panel" id="s-rules" aria-labelledby="h-rules" data-title="Rules of the Game" data-icon="i-gavel">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-gavel"/></svg>Explore · Objectives, constraints, final price</span>
+    <h2 id="h-rules" tabindex="-1">Rules of the Game</h2>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Quick discussion: "Which objective would a new food truck pick? A 100-year-old company? A nonprofit clinic?" Stress that the four legal issues are illegal practices, not strategies. Students should be able to spot them in the news.
+    </div>
+
+    <div class="card">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Pricing objectives: what is the price supposed to accomplish?</h3>
+      <p><strong>Pricing objectives</strong> spell out the role price plays in a company's marketing and strategic plans. Tap a card to flip it.</p>
+      <div class="grid3" id="objectives"></div>
+    </div>
+
+    <div class="card">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> Pricing constraints: what limits the price?</h3>
+      <p><strong>Pricing constraints</strong> are factors that limit the range of prices a company can set.</p>
+      <div class="grid3">
+        <div class="scard"><h3>Demand</h3><p class="ex">For the product class (cars), product group (sports cars), and brand (Bugatti Chiron).</p></div>
+        <div class="scard"><h3>Newness</h3><p class="ex">Stage in the product life cycle. Brand-new products are usually priced higher.</p></div>
+        <div class="scard"><h3>Cost</h3><p class="ex">The cost of producing and marketing the product sets a floor over the long run.</p></div>
+        <div class="scard"><h3>Competitors</h3><p class="ex">What rivals charge, and how they'll react if you move.</p></div>
+        <div class="scard"><h3>Legal and ethical</h3><p class="ex">Laws protect buyers and competitors from unfair pricing. See below.</p></div>
+      </div>
+      <h3 style="margin-top:1.3rem">Call it! Which illegal practice is this? <span class="score" id="legal-score" aria-live="polite">0 / 4</span></h3>
+      <ul class="classify" id="legal-list"></ul>
+    </div>
+
+    <div class="card">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg> Setting a final price in three steps</h3>
+      <p>The final price must be <strong>high enough</strong> to cover costs and meet objectives, but <strong>low enough</strong> that customers will buy.</p>
+      <div class="process">
+        <div class="stp"><h3>Select an approximate price level</h3><p class="ex" style="margin:0">Use the demand, cost, profit, and competition tools from the Toolkit.</p></div>
+        <div class="stp"><h3>Set the list or quoted price</h3><p class="ex" style="margin:0"><strong>One-price policy:</strong> same price for everyone (CarMax's no-haggle prices). <strong>Dynamic pricing:</strong> prices flex by buyer and situation (Uber surge pricing).</p></div>
+        <div class="stp"><h3>Make special adjustments</h3><p class="ex" style="margin:0"><strong>Discounts</strong> (quantity, seasonal, trade, cash), <strong>allowances</strong> (trade-in, promotional), and <strong>everyday low pricing (EDLP)</strong> vs. high-low pricing.</p></div>
+      </div>
+      <div id="vid-carmax"></div>
+      <h3 style="margin-top:1.3rem">Name that adjustment <span class="score" id="disc-score" aria-live="polite">0 / 6</span></h3>
+      <ul class="classify" id="disc-list"></ul>
+    </div>
+  </section>
+
+  <!-- ===================== 5. SCENARIO STUDIO ===================== -->
+  <section class="panel" id="s-scenarios" aria-labelledby="h-scen" data-title="Scenario Studio" data-icon="i-users">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg>Apply · Real-world consulting cases</span>
+    <h2 id="h-scen" tabindex="-1">Scenario Studio</h2>
+    <p>Five real companies, five real pricing puzzles. Read the brief, watch if there's a video, make your call, and justify it in your strategist's notes. You can change your answer to learn from the feedback, but your <strong>first</strong> pick goes on your Strategy Record.</p>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Teacher-led option: show the brief, have pairs commit to an answer on mini whiteboards, then reveal. For the Uber case, run a "four corners" debate (strongly fair → strongly unfair) before showing the arguments. Spirit Airlines numbers are illustrative. Have students check current fees on a live booking site for an extension.
+    </div>
+    <nav class="scen-nav" aria-label="Scenarios" id="scen-nav"></nav>
+    <div class="card" id="scen-body"></div>
+  </section>
+
+  <!-- ===================== 6. DEBRIEF ===================== -->
+  <section class="panel" id="s-debrief" aria-labelledby="h-debrief" data-title="Debrief" data-icon="i-chat">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Reflect · Connect the dots</span>
+    <h2 id="h-debrief" tabindex="-1">Debrief</h2>
+    <div class="tnote" role="note" aria-label="Teacher note"><strong><svg class="ic" aria-hidden="true"><use href="#i-teacher"/></svg>Facilitator note</strong>
+      Use the Strategy Record to find which case tripped up the most students and revisit it. Prompt 1 works well as a think-pair-share. Self-paced students can copy or download their reflections to submit.
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> Your Strategy Record</h3>
+        <ul class="record" id="record"></ul>
+        <p style="margin-top:.8rem" id="record-sum"></p>
+      </div>
+      <div class="card">
+        <h3>Big ideas to keep</h3>
+        <div class="grid2" style="gap:.6rem">
+          <div class="big"><b>Value is personal</b>Value = perceived benefits ÷ price. Energizer learned that a low price can signal low quality.</div>
+          <div class="big"><b>Four lenses</b>Demand, cost, profit, and competition each point toward a price level.</div>
+          <div class="big"><b>Run the numbers</b>BEP = FC ÷ (P − UVC). A higher price or a lower cost reaches profit sooner.</div>
+          <div class="big"><b>Guardrails matter</b>Objectives steer the price, and constraints (including the law) fence it in.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Strategist's reflection</h3>
+      <label class="field" for="d1">1. Back to the driving question: How should a company decide what to charge? Use at least two terms from this lesson.</label>
+      <textarea id="d1" data-save="d1"></textarea>
+      <label class="field" for="d2" style="margin-top:1rem">2. Which case changed your thinking the most, and why?</label>
+      <textarea id="d2" data-save="d2"></textarea>
+      <label class="field" for="d3" style="margin-top:1rem">3. Pick a product you bought this week. Which pricing approach do you think the company used? What's your evidence?</label>
+      <textarea id="d3" data-save="d3"></textarea>
+      <div class="row" style="margin-top:1rem">
+        <button class="btn" type="button" id="btn-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Copy my work</button>
+        <button class="btn ghost" type="button" id="btn-dl"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Download my work (.txt)</button>
+        <span id="copy-status" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. QUICK REVIEW ===================== -->
+  <section class="panel" id="s-review" aria-labelledby="h-review" data-title="Quick Review" data-icon="i-check">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Check · 12 questions</span>
+    <h2 id="h-review" tabindex="-1">Quick Review</h2>
+    <p>Score <strong>9 or more out of 12</strong> to unlock your certificate. You can retake it as many times as you need.</p>
+    <form id="quiz" class="card" novalidate></form>
+  </section>
+
+  <!-- ===================== 8. CERTIFICATE ===================== -->
+  <section class="panel" id="s-cert" aria-labelledby="h-cert" data-title="Certificate" data-icon="i-trophy">
+    <span class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg>Celebrate</span>
+    <h2 id="h-cert" tabindex="-1">Your Certificate</h2>
+    <div id="cert-area"></div>
+  </section>
+
+  <div class="pager">
+    <button class="btn ghost" type="button" id="btn-prev"><svg class="ic" aria-hidden="true"><use href="#i-arrow-l"/></svg>Back</button>
+    <button class="btn gold" type="button" id="btn-next">Next<svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+  </div>
+  </main>
+</div>
+
+<footer>
+  Price Lab · Chapter 11: Pricing Products and Services. Concepts aligned to Kerin &amp; Hartley, <cite>Marketing: The Core</cite> (2024 Release), Chapter 11. Company examples are for educational discussion. Figures labeled "illustrative" are simplified for practice. Videos are hosted by YouTube and its creators.
+</footer>
+<div id="sr-announce" class="sr-only" aria-live="assertive"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================
+   VIDEO LIBRARY — edit ids/titles here. Set id:"" to show
+   only the written summary (no player).
+   ========================================================= */
+var VIDEOS = {
+  prestige:{id:"O7AOg7M-ezA", company:"Rolex", title:"Why Rolex Watches Are So Expensive",
+    watch:"Listen for how scarcity and status, not just materials, support a sky-high price.",
+    brief:"Rolex keeps prices high on purpose. Limited supply, long waitlists, and a reputation for quality make a high price part of what buyers want. For status-conscious buyers, a lower price could actually reduce demand. That's prestige pricing."},
+  odd:{id:"pvF4kFPE8U4", company:"Retail everywhere", title:"Why Do So Many Price Tags End in .99?",
+    watch:"Notice the 'left-digit effect': why $19.99 feels closer to $10 than $20.",
+    brief:"Shoppers read prices left to right, so $19.99 registers as 'nineteen-something.' Pricing a few cents or dollars below a round number (odd-even pricing) makes a product feel like a bargain, which is why Carmex and most retailers end prices in 9."},
+  skim:{id:"vq5PlqSBsVk", company:"Tech launches", title:"Penetration Pricing vs. Price Skimming Explained",
+    watch:"Compare who each strategy targets first: eager early adopters or the mass market.",
+    brief:"Skimming starts high to capture buyers who want the newest thing now, then lowers the price over time. Penetration starts low to grab a big share of the mass market fast, scaring off competitors and building loyalty."},
+  breakeven:{id:"vUT8lZLZpKg", company:"Small business", title:"Break-Even Analysis Explained",
+    watch:"Track how fixed and variable costs combine into total cost.",
+    brief:"Every unit sold earns its price minus its variable cost. That amount chips away at fixed costs. Once those are fully covered, at the break-even point, every additional unit adds profit."},
+  costco:{id:"kOf0Pdi4C5I", company:"Costco", title:"Why Costco Refuses to Raise the Price of Its Hot Dog",
+    watch:"Ask yourself: what is Costco really selling with a $1.50 hot dog?",
+    brief:"Costco's hot dog and soda combo has cost $1.50 since the 1980s, even as costs rose. Costco treats it as a symbol of value that brings members into stores, where they buy higher-margin items and renew memberships. That's a loss leader with a customary price."},
+  uber:{id:"TtAHctHMOyk", company:"Uber", title:"Uber Surge Pricing Explained by an Uber Driver Economist",
+    watch:"Listen for what happens to supply (drivers) and demand (riders) when prices surge.",
+    brief:"When many riders want rides at once, such as after a concert or on New Year's Eve, demand shifts right. Uber raises fares to encourage more drivers to log on and to ration rides to people who value them most. Critics call it price gouging. Supporters say it gets more cars on the road."},
+  carmax:{id:"", company:"CarMax", title:"CarMax: The No-Haggle Price",
+    watch:"",
+    brief:"CarMax uses a one-price policy: the sticker price is the price for every buyer, with no haggling. Compare that with a dynamic pricing policy, where the price changes depending on the buyer and the situation."}
+};
+
+/* ---------- Storage (safe) ---------- */
+var KEY="priceLabCh11.v1";
+var S={name:"",sec:0,visited:{0:true},bottle:{},names:{},barter:null,sort:{},el:{},legal:{},disc:{},pp:null,ppc:null,bech:null,scen:{},scenFirst:{},scenNotes:{},txt:{},quiz:{a:{},submitted:false,score:0,best:0},teacher:false,fs:0,scenIdx:0};
+try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o){S[k]=o[k];}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function icon(id){return '<svg class="ic" aria-hidden="true"><use href="#'+id+'"/></svg>';}
+function money(n){var neg=n<0;n=Math.abs(n);var s="$"+n.toLocaleString("en-US",{maximumFractionDigits:0});return neg?"−"+s:s;}
+function announce(t){var a=$("#sr-announce");a.textContent="";setTimeout(function(){a.textContent=t;},50);}
+var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Video card ---------- */
+function videoCard(key){
+  var v=VIDEOS[key]; if(!v) return "";
+  var hasId=!!v.id;
+  var h='<figure class="video'+(hasId?'':' noembed')+'" data-vid="'+esc(v.id)+'" data-title="'+esc(v.title)+'" style="margin-left:0;margin-right:0">';
+  if(hasId){
+    h+='<div class="frame"><button type="button" class="poster" aria-label="Play video: '+esc(v.title)+'"><span class="co">'+esc(v.company)+'</span><span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg></span><span class="vt">'+esc(v.title)+'</span></button></div>';
+  }
+  h+='<figcaption class="meta">';
+  h+='<strong style="color:var(--gold)">'+icon("i-play")+' '+(hasId?'Watch: ':'Real-world connection: ')+esc(v.title)+'</strong>';
+  if(v.watch) h+='<p><strong>Watch for:</strong> '+esc(v.watch)+'</p>';
+  h+='<details'+(hasId?'':' open')+'><summary>Story in brief (text summary)</summary><p>'+esc(v.brief)+'</p></details>';
+  if(hasId) h+='<p style="margin:.4rem 0 0;font-size:.88rem"><a href="https://www.youtube.com/watch?v='+encodeURIComponent(v.id)+'" target="_blank" rel="noopener">Open on YouTube<span class="sr-only"> (opens in a new tab)</span></a> · Turn on captions with the CC button.</p>';
+  h+='</figcaption></figure>';
+  return h;
+}
+document.addEventListener("click",function(e){
+  var p=e.target.closest&&e.target.closest(".poster"); if(!p) return;
+  var fig=p.closest(".video"); var id=fig.getAttribute("data-vid");
+  var f=document.createElement("iframe");
+  f.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0&autoplay=1&cc_load_policy=1";
+  f.title="Video: "+fig.getAttribute("data-title");
+  f.allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture";
+  f.allowFullscreen=true;
+  p.replaceWith(f); f.focus();
+});
+
+/* ---------- Sections / navigation ---------- */
+var panels=$$("section.panel");
+var stepList=$("#step-list");
+panels.forEach(function(p,i){
+  var li=document.createElement("li");
+  li.innerHTML='<button type="button" data-i="'+i+'"><span class="num">'+(i+1)+'</span>'+esc(p.getAttribute("data-title"))+'</button>';
+  stepList.appendChild(li);
+});
+function show(i,focus){
+  i=Math.max(0,Math.min(panels.length-1,i));
+  S.sec=i; S.visited[i]=true; save();
+  panels.forEach(function(p,j){p.classList.toggle("active",j===i);});
+  $$("button",stepList).forEach(function(b,j){
+    if(j===i) b.setAttribute("aria-current","step"); else b.removeAttribute("aria-current");
+    b.classList.toggle("done",!!S.visited[j]&&j!==i);
+  });
+  $("#btn-prev").disabled=(i===0);
+  var nb=$("#btn-next"); nb.style.visibility=(i===panels.length-1)?"hidden":"visible";
+  var pct=Math.round(Object.keys(S.visited).length/panels.length*100);
+  $("#progress-bar").style.width=pct+"%";
+  $(".progress").setAttribute("aria-valuenow",pct);
+  if(panels[i].id==="s-debrief") renderRecord();
+  if(panels[i].id==="s-cert") renderCert();
+  if(focus){window.scrollTo({top:0,behavior:reduceMotion?"auto":"smooth"});var h=panels[i].querySelector("h1,h2");if(h)h.focus({preventScroll:true});}
+}
+stepList.addEventListener("click",function(e){var b=e.target.closest("button");if(b)show(+b.getAttribute("data-i"),true);});
+$("#btn-prev").addEventListener("click",function(){show(S.sec-1,true);});
+$("#btn-next").addEventListener("click",function(){show(S.sec+1,true);});
+
+/* ---------- Toolbar ---------- */
+function applyTeacher(){document.body.classList.toggle("teacher",!!S.teacher);$("#btn-teacher").setAttribute("aria-pressed",S.teacher?"true":"false");}
+$("#btn-teacher").addEventListener("click",function(){S.teacher=!S.teacher;save();applyTeacher();announce(S.teacher?"Teacher notes shown":"Teacher notes hidden");});
+var fsNames=["normal","large","extra large"];
+function applyFs(){document.documentElement.classList.remove("fs-1","fs-2");if(S.fs)document.documentElement.classList.add("fs-"+S.fs);$("#btn-font").setAttribute("aria-label","Change text size. Current: "+fsNames[S.fs]);}
+$("#btn-font").addEventListener("click",function(){S.fs=(S.fs+1)%3;save();applyFs();announce("Text size "+fsNames[S.fs]);});
+$("#btn-reset").addEventListener("click",function(){
+  if(window.confirm("Start over? This clears your answers and notes saved in this browser.")){try{localStorage.removeItem(KEY);}catch(e){} location.reload();}
+});
+
+/* ---------- Name & free text ---------- */
+var nameIn=$("#student-name"); nameIn.value=S.name||"";
+nameIn.addEventListener("input",function(){S.name=nameIn.value.trim();save();});
+$$("textarea[data-save]").forEach(function(t){var k=t.getAttribute("data-save");t.value=S.txt[k]||"";t.addEventListener("input",function(){S.txt[k]=t.value;save();});});
+
+/* ---------- Generic classifier ---------- */
+function classifier(listEl,scoreEl,items,cats,store){
+  function render(){
+    listEl.innerHTML="";
+    items.forEach(function(it,i){
+      var li=document.createElement("li");
+      var gid=listEl.id+"-"+i;
+      var h='<div class="item" id="'+gid+'">'+(it.icon?icon(it.icon):'')+'<span>'+esc(it.t)+'</span></div><div class="choices" role="group" aria-labelledby="'+gid+'">';
+      cats.forEach(function(c){
+        var pressed=store[i]===c.v;
+        var cls=pressed?(c.v===it.a?" right":" wrong"):"";
+        h+='<button type="button" class="choice'+cls+'" aria-pressed="'+pressed+'" data-i="'+i+'" data-v="'+c.v+'">'+esc(c.label)+'</button>';
+      });
+      h+='</div><div class="fb'+(store[i]!=null?(" show "+(store[i]===it.a?"ok":"bad")):"")+'" role="status">'+(store[i]!=null?fbText(it,store[i]):"")+'</div>';
+      li.innerHTML=h; listEl.appendChild(li);
+    });
+    updateScore();
+  }
+  function fbText(it,v){
+    var ok=v===it.a; var lab=cats.filter(function(c){return c.v===it.a;})[0].label;
+    return (ok?icon("i-check")+' <strong>Correct.</strong> ':icon("i-x")+' <strong>Not quite.</strong> Try again. ')+(ok?esc(it.why):"Hint: "+esc(it.hint||it.why.split(".")[0]+"."));
+  }
+  function updateScore(){var n=0;items.forEach(function(it,i){if(store[i]===it.a)n++;});scoreEl.textContent=n+" / "+items.length;}
+  listEl.addEventListener("click",function(e){
+    var b=e.target.closest("button.choice"); if(!b) return;
+    var i=+b.getAttribute("data-i"), v=b.getAttribute("data-v");
+    store[i]=v; save();
+    var li=b.closest("li");
+    $$("button.choice",li).forEach(function(x){var p=x===b;x.setAttribute("aria-pressed",p);x.classList.remove("right","wrong");if(p)x.classList.add(v===items[i].a?"right":"wrong");});
+    var fb=$(".fb",li); fb.className="fb show "+(v===items[i].a?"ok":"bad"); fb.innerHTML=fbText(items[i],v);
+    updateScore();
+  });
+  render();
+}
+
+/* ---------- WARM UP ---------- */
+var BOTTLES=[
+  {k:"school",label:"School vending machine, between classes",icon:"i-school"},
+  {k:"gas",label:"Gas station on a road trip",icon:"i-fuel"},
+  {k:"airport",label:"Airport, after security, flight boards in 10 min",icon:"i-plane"},
+  {k:"stadium",label:"Stadium, 98°F, your team is in overtime",icon:"i-stadium"}
+];
+var bw=$("#bottles");
+BOTTLES.forEach(function(b){
+  var v=S.bottle[b.k]!=null?S.bottle[b.k]:2;
+  var d=document.createElement("div"); d.className="bottle";
+  d.innerHTML='<div class="where">'+icon(b.icon)+'<label for="bt-'+b.k+'">'+esc(b.label)+'</label></div><input type="range" id="bt-'+b.k+'" min="0" max="10" step="0.25" value="'+v+'" aria-valuetext="$'+Number(v).toFixed(2)+'"><output for="bt-'+b.k+'" id="bo-'+b.k+'">$'+Number(v).toFixed(2)+'</output>';
+  bw.appendChild(d);
+  var r=$("#bt-"+b.k,d);
+  r.addEventListener("input",function(){var x=+r.value;S.bottle[b.k]=x;save();$("#bo-"+b.k).textContent="$"+x.toFixed(2);r.setAttribute("aria-valuetext","$"+x.toFixed(2));});
+});
+$("#btn-bottle").addEventListener("click",function(){
+  var vals=BOTTLES.map(function(b){return {l:b.label,v:+$("#bt-"+b.k).value};});
+  var mx=vals.reduce(function(a,b){return b.v>a.v?b:a;}), mn=vals.reduce(function(a,b){return b.v<a.v?b:a;});
+  var txt;
+  if(mx.v===mn.v) txt="You'd pay the same $"+mx.v.toFixed(2)+" everywhere. Interesting! Most people pay much more when they're desperate and have no alternatives. Why do you think your answer stayed the same?";
+  else txt="Your highest price ($"+mx.v.toFixed(2)+" at the "+mx.l.split(",")[0].toLowerCase()+") is "+(mn.v>0?(mx.v/mn.v).toFixed(1)+" times":"far more than")+" your lowest ($"+mn.v.toFixed(2)+" at the "+mn.l.split(",")[0].toLowerCase()+"). Same water. Different value.";
+  $("#bottle-summary").textContent=txt;
+  $("#bottle-reveal").classList.add("show");
+});
+
+var NAMES=[
+  {n:"Tuition",a:"College classes"},{n:"Fare",a:"A bus or airline ticket"},{n:"Rent",a:"An apartment"},
+  {n:"Premium",a:"Insurance coverage"},{n:"Interest",a:"A loan"},{n:"Fee",a:"A lawyer or doctor's service"}
+];
+var ANS=NAMES.map(function(x){return x.a;}).slice().sort();
+var nm=$("#names");
+NAMES.forEach(function(x,i){
+  var opts='<option value="">Choose…</option>'+ANS.map(function(a){return '<option'+(S.names[i]===a?' selected':'')+'>'+esc(a)+'</option>';}).join("");
+  nm.insertAdjacentHTML("beforeend",'<label for="nm-'+i+'" style="font-weight:600">'+icon("i-tag")+' '+esc(x.n)+'</label><select id="nm-'+i+'">'+opts+'</select>');
+});
+nm.addEventListener("change",function(e){var i=+e.target.id.split("-")[1];S.names[i]=e.target.value;save();});
+$("#btn-names").addEventListener("click",function(){
+  var c=0,wrong=[];NAMES.forEach(function(x,i){if($("#nm-"+i).value===x.a)c++;else wrong.push(x.n);});
+  var fb=$("#names-fb");fb.className="fb show "+(c===NAMES.length?"ok":"bad");
+  fb.innerHTML=c===NAMES.length?icon("i-check")+" <strong>6 / 6!</strong> Whatever it's called, it's still a price: what you give up to get something of value.":icon("i-x")+" <strong>"+c+" / 6.</strong> Take another look at: "+esc(wrong.join(", "))+".";
+});
+function barterFb(v){
+  var fb=$("#barter-fb");fb.className="fb show "+(v==="yes"?"ok":"bad");
+  fb.innerHTML=v==="yes"?icon("i-check")+" <strong>Yes!</strong> Exchanging products or services for other products or services is called <strong>barter</strong>. A price doesn't have to be money. Your old game was the price of the hoodie.":icon("i-x")+" <strong>Think again.</strong> You gave up something of value (your game) to get the hoodie. Does a price have to be money?";
+  $$("#barter .choice").forEach(function(b){var p=b.getAttribute("data-v")===v;b.setAttribute("aria-pressed",p);b.classList.remove("right","wrong");if(p)b.classList.add(v==="yes"?"right":"wrong");});
+}
+$("#barter").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;S.barter=b.getAttribute("data-v");save();barterFb(S.barter);});
+if(S.barter)barterFb(S.barter);
+
+/* ---------- TOOLKIT ---------- */
+var APPROACHES=[
+  {k:"demand",label:"Demand",icon:"i-users",lead:"Demand-oriented approaches weigh what buyers want and how much they're willing to pay.",video:"prestige",video2:"odd",video3:"skim",
+   cards:[
+    {t:"Skimming pricing",i:"i-rocket",d:"Set the highest initial price that eager early buyers will pay for a new or innovative product, then lower it over time.",ex:"A new flagship phone or game console at launch."},
+    {t:"Penetration pricing",i:"i-arrow-r",d:"Set a low initial price on a new product to win the mass market fast.",ex:"A new streaming service's cheap intro plan."},
+    {t:"Prestige pricing",i:"i-crown",d:"Set a high price to attract quality- or status-conscious buyers. Lowering the price can actually reduce demand.",ex:"Rolex watches."},
+    {t:"Odd-even pricing",i:"i-tag",d:"Set prices a few dollars or cents under an even number.",ex:"$19.99 instead of $20, or Carmex prices ending in 9."},
+    {t:"Bundle pricing",i:"i-cart",d:"Market two or more products in a single package price.",ex:"A fast-food combo meal or a streaming bundle."}
+   ]},
+  {k:"cost",label:"Cost",icon:"i-calc",lead:"Cost-oriented approaches start with what it costs to make or buy the product, then add an amount on top.",video:"breakeven",
+   cards:[
+    {t:"Standard markup pricing",i:"i-tag",d:"Add a fixed percentage to the cost of all items in a product class.",ex:"A grocery store adding the same markup to all produce, or movie theater popcorn."},
+    {t:"Cost-plus pricing",i:"i-calc",d:"Add up the total unit cost of a product or service, then add a specific amount (a percentage or a fixed fee) to set the price.",ex:"Construction projects, like building a museum, and many government contracts."}
+   ]},
+  {k:"profit",label:"Profit",icon:"i-coin",lead:"Profit-oriented approaches work backward from a profit goal.",
+   cards:[
+    {t:"Target profit pricing",i:"i-target",d:"Set the price to hit a specific dollar amount of profit for the year.",ex:"\"We need $50,000 in profit from this product line.\""},
+    {t:"Target return-on-sales",i:"i-chart",d:"Set the price to earn profit equal to a set percentage of sales.",ex:"A store aiming for profit of 20% of sales revenue."},
+    {t:"Target return-on-investment",i:"i-coin",d:"Set the price to reach a target annual return on investment (ROI).",ex:"Big manufacturers judging a new plant by the ROI it delivers."}
+   ]},
+  {k:"competition",label:"Competition",icon:"i-scale",lead:"Competition-oriented approaches use rivals' prices or market tradition as the benchmark.",
+   cards:[
+    {t:"Customary pricing",i:"i-reset",d:"A price set by tradition, a standard channel of distribution, or other competitive factors.",ex:"Costco's $1.50 hot dog combo, a price unchanged for decades."},
+    {t:"Above-, at-, or below-market",i:"i-scale",d:"Set the price using a subjective feel for competitors' prices or the market price as the benchmark.",ex:"Red Bull priced above market, store brands priced below."},
+    {t:"Loss-leader pricing",i:"i-cart",d:"Sell a product below its customary price to attract shoppers who'll also buy higher-markup items.",ex:"Cheap rotisserie chicken in the back of a warehouse store."}
+   ]}
+];
+var tabsEl=$("#approach-tabs"), panesEl=$("#approach-panels");
+APPROACHES.forEach(function(a,i){
+  tabsEl.insertAdjacentHTML("beforeend",'<button role="tab" type="button" id="at-'+a.k+'" aria-controls="ap-'+a.k+'" aria-selected="'+(i===0)+'"'+(i?' tabindex="-1"':'')+'>'+icon(a.icon)+esc(a.label)+'-oriented</button>');
+  var h='<div role="tabpanel" id="ap-'+a.k+'" aria-labelledby="at-'+a.k+'"'+(i?' hidden':'')+'><p class="fb info show" style="margin-top:0">'+esc(a.lead)+'</p><div class="grid3">';
+  a.cards.forEach(function(c){h+='<div class="scard"><h3>'+icon(c.i)+esc(c.t)+'</h3><p style="font-size:.95rem">'+esc(c.d)+'</p><p class="ex"><b>Example:</b> '+esc(c.ex)+'</p></div>';});
+  h+='</div>';
+  [a.video,a.video2,a.video3].forEach(function(v){if(v)h+=videoCard(v);});
+  if(a.k==="profit") h+='<div class="fb info show"><strong>'+icon("i-bulb")+' Try it:</strong> A shop has $32,000 in fixed costs, $40 unit variable cost, and expects to sell 1,000 units. It wants $48,000 profit. What price hits the target? <details style="display:inline"><summary style="display:inline;cursor:pointer;text-decoration:underline">Show answer</summary> Profit = P×Q − (FC + UVC×Q) → 48,000 = 1,000P − 72,000 → <strong>P = $120</strong>.</details></div>';
+  h+='</div>';
+  panesEl.insertAdjacentHTML("beforeend",h);
+});
+function wireTabs(list){
+  var tabs=$$('[role=tab]',list);
+  function sel(t,focus){tabs.forEach(function(x){var on=x===t;x.setAttribute("aria-selected",on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute("aria-controls")).hidden=!on;});if(focus)t.focus();}
+  list.addEventListener("click",function(e){var t=e.target.closest("[role=tab]");if(t)sel(t);});
+  list.addEventListener("keydown",function(e){var i=tabs.indexOf(document.activeElement);if(i<0)return;var n=null;
+    if(e.key==="ArrowRight")n=(i+1)%tabs.length;else if(e.key==="ArrowLeft")n=(i-1+tabs.length)%tabs.length;else if(e.key==="Home")n=0;else if(e.key==="End")n=tabs.length-1;
+    if(n!==null){e.preventDefault();sel(tabs[n],true);}});
+}
+wireTabs(tabsEl); wireTabs($("#lab-tabs"));
+
+var CATS4=[{v:"demand",label:"Demand"},{v:"cost",label:"Cost"},{v:"profit",label:"Profit"},{v:"competition",label:"Competition"}];
+var SORT=[
+  {t:"A new VR headset launches at $1,499 for superfans, then drops to $999 a year later.",a:"demand",icon:"i-rocket",why:"That's skimming: start high for eager early adopters, a demand-oriented approach."},
+  {t:"A bakery adds 50% to the cost of every cake it sells.",a:"cost",icon:"i-calc",why:"Adding a fixed percentage to cost is standard markup pricing, a cost-oriented approach."},
+  {t:"A sneaker brand prices its sneakers just under the leading rival's price.",a:"competition",icon:"i-scale",why:"Using a rival's price as the benchmark is below-market pricing, a competition-oriented approach."},
+  {t:"A food truck sets prices so it earns exactly $30,000 profit this year.",a:"profit",icon:"i-target",why:"Working backward from a dollar profit goal is target profit pricing, a profit-oriented approach."},
+  {t:"A fast-food chain sells a burger, fries, and drink together for one combo price.",a:"demand",icon:"i-cart",why:"Bundle pricing is demand-oriented. It packages products so buyers see more value."},
+  {t:"A grocery store sells turkeys below cost the week before Thanksgiving.",a:"competition",icon:"i-cart",why:"Loss-leader pricing draws shoppers in to buy higher-markup items, a competition-oriented approach."},
+  {t:"A contractor bills the city for its costs plus a fixed $80,000 fee.",a:"cost",icon:"i-calc",why:"Cost-plus fixed-fee pricing is a cost-oriented approach."},
+  {t:"A luxury handbag brand refuses to discount because a low price would hurt its image.",a:"demand",icon:"i-crown",why:"Prestige pricing is demand-oriented. Status-conscious buyers expect a high price."},
+  {t:"A retailer prices so profit equals 15% of total sales revenue.",a:"profit",icon:"i-chart",why:"Target return-on-sales pricing is profit-oriented."},
+  {t:"A candy bar sells for about the same price at every store because shoppers expect it.",a:"competition",icon:"i-reset",why:"Prices set by tradition are customary pricing, a competition-oriented approach."}
+];
+classifier($("#sort-list"),$("#sort-score"),SORT,CATS4,S.sort);
+
+/* ---------- NUMBER LAB: demand curve ---------- */
+(function(){
+  var svg=$("#dc-chart"), ns="http://www.w3.org/2000/svg";
+  var X0=70,Y0=320,W=520,H=280; // plot area
+  function x(q){return X0+q/8*W;} function y(p){return Y0-p/10*H;}
+  function el(t,a,txt){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+  // grid & axes
+  for(var p=0;p<=10;p+=2){el("line",{x1:X0,y1:y(p),x2:X0+W,y2:y(p),stroke:"#E7E2D5"});el("text",{x:X0-10,y:y(p)+4,"text-anchor":"end"},"$"+p);}
+  for(var q=0;q<=8;q++){el("text",{x:x(q),y:Y0+20,"text-anchor":"middle"},q);}
+  el("line",{x1:X0,y1:Y0,x2:X0+W,y2:Y0,stroke:"#0B1D3A","stroke-width":2});
+  el("line",{x1:X0,y1:Y0,x2:X0,y2:Y0-H,stroke:"#0B1D3A","stroke-width":2});
+  el("text",{x:X0+W/2,y:Y0+44,"text-anchor":"middle","font-weight":"600"},"Quantity demanded per year (millions of pizzas)");
+  var yl=el("text",{x:18,y:Y0-H/2,"text-anchor":"middle","font-weight":"600",transform:"rotate(-90 18 "+(Y0-H/2)+")"},"Price per pizza");
+  // D1: P = 12 - 2Q from Q=1..5 ; D2: P = 18 - 2Q from Q=4..8
+  el("line",{x1:x(1),y1:y(10),x2:x(5.5),y2:y(1),stroke:"#13294F","stroke-width":4});
+  el("text",{x:x(5.5)+8,y:y(1),"font-weight":"700",fill:"#13294F"},"D1");
+  var d2=el("line",{x1:x(4),y1:y(10),x2:x(8),y2:y(2),stroke:"#7A5B0C","stroke-width":4,"stroke-dasharray":"10 6",opacity:0});
+  var d2t=el("text",{x:x(8)-26,y:y(2)-8,"font-weight":"700",fill:"#7A5B0C",opacity:0},"D2");
+  var guide=el("path",{d:"",stroke:"#8A93A6","stroke-dasharray":"4 4",fill:"none"});
+  var dot=el("circle",{cx:x(2),cy:y(8),r:10,fill:"#D9AE45",stroke:"#0B1D3A","stroke-width":3});
+  var lab=el("text",{x:x(2)+14,y:y(8)-12,"font-weight":"700"},"Q1 ($8, 2M)");
+  var cur={q:2,p:8},anim=null;
+  function place(q,p,txt){cur={q:q,p:p};dot.setAttribute("cx",x(q));dot.setAttribute("cy",y(p));lab.setAttribute("x",x(q)+14);lab.setAttribute("y",y(p)-12);lab.textContent=txt;guide.setAttribute("d","M"+X0+" "+y(p)+" H"+x(q)+" V"+Y0);}
+  function go(q,p,txt){
+    if(anim)cancelAnimationFrame(anim);
+    if(reduceMotion){place(q,p,txt);return;}
+    var s={q:cur.q,p:cur.p},t0=null;
+    function step(ts){if(!t0)t0=ts;var k=Math.min(1,(ts-t0)/900);var e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;place(s.q+(q-s.q)*e,s.p+(p-s.p)*e,txt);if(k<1)anim=requestAnimationFrame(step);}
+    anim=requestAnimationFrame(step);
+  }
+  place(2,8,"Q1 ($8, 2M)");
+  var fb=$("#dc-fb");
+  $("#dc-move").addEventListener("click",function(){d2.setAttribute("opacity",0);d2t.setAttribute("opacity",0);go(3,6,"Q2 ($6, 3M)");
+    fb.innerHTML="<strong>Movement along the curve.</strong> Only the price changed. Dropping it from $8 to $6 moves us down D1 from 2 million to 3 million pizzas. The curve itself stays put.";});
+  $("#dc-shift").addEventListener("click",function(){d2.setAttribute("opacity",1);d2t.setAttribute("opacity",1);go(5,8,"Q3 ($8, 5M)");
+    fb.innerHTML="<strong>Shift of the curve.</strong> The price stayed at $8, but something else changed: tastes, incomes, or a rival's price went up. The whole curve shifts right to D2, and sales jump to 5 million pizzas.";});
+  $("#dc-reset").addEventListener("click",function(){d2.setAttribute("opacity",0);d2t.setAttribute("opacity",0);go(2,8,"Q1 ($8, 2M)");fb.innerHTML="Start point Q1: $8 per pizza, 2 million pizzas a year.";});
+})();
+
+var EL=[
+  {t:"Gas prices rise 10%, and drivers buy only 2% less gas.",a:"in",icon:"i-fuel",why:"Quantity barely moved (2% vs. 10%). Gas is a near-necessity with few substitutes."},
+  {t:"One soda brand cuts its price 10%, and its sales jump 30%.",a:"el",icon:"i-cart",why:"Quantity moved more than price (30% vs. 10%). There are many substitute drinks."},
+  {t:"Insulin's price rises 15%, and patients buy about the same amount.",a:"in",icon:"i-lock",why:"Life-saving necessities are highly inelastic. That's also why prices for them draw public-policy attention."},
+  {t:"A streaming service raises its price 10%, and 20% of subscribers cancel.",a:"el",icon:"i-tablet",why:"Subscribers reacted strongly (20% vs. 10%) because other services are easy to switch to."}
+];
+classifier($("#el-list"),$("#el-score"),EL,[{v:"el",label:"Elastic"},{v:"in",label:"Inelastic"}],S.el);
+
+/* ---------- Break-even ---------- */
+(function(){
+  var P=$("#be-p"),U=$("#be-uvc"),F=$("#be-fc"),Q=$("#be-q");
+  var svg=$("#be-chart"),ns="http://www.w3.org/2000/svg";
+  var X0=70,Y0=310,W=430,H=280,QMAX=2000;
+  function draw(){
+    var p=+P.value,u=+U.value,f=+F.value,q=+Q.value;
+    $("#be-p-o").textContent=money(p);$("#be-uvc-o").textContent=money(u);$("#be-fc-o").textContent=money(f);$("#be-q-o").textContent=q.toLocaleString();
+    P.setAttribute("aria-valuetext",money(p));U.setAttribute("aria-valuetext",money(u));F.setAttribute("aria-valuetext",money(f));Q.setAttribute("aria-valuetext",q+" frames");
+    var ymax=Math.max(p*QMAX,f+u*QMAX); ymax=Math.ceil(ymax/50000)*50000;
+    function x(v){return X0+v/QMAX*W;} function y(v){return Y0-v/ymax*H;}
+    while(svg.lastChild&&svg.lastChild.nodeName!=="desc")svg.removeChild(svg.lastChild);
+    function el(t,a,txt){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+    var stepY=ymax/5;
+    for(var i=0;i<=5;i++){var v=i*stepY;el("line",{x1:X0,y1:y(v),x2:X0+W,y2:y(v),stroke:"#E7E2D5"});el("text",{x:X0-8,y:y(v)+4,"text-anchor":"end"},"$"+Math.round(v/1000)+"k");}
+    for(var j=0;j<=4;j++){var qq=j*500;el("text",{x:x(qq),y:Y0+18,"text-anchor":"middle"},qq.toLocaleString());}
+    el("line",{x1:X0,y1:Y0,x2:X0+W,y2:Y0,stroke:"#0B1D3A","stroke-width":2});el("line",{x1:X0,y1:Y0,x2:X0,y2:Y0-H,stroke:"#0B1D3A","stroke-width":2});
+    el("text",{x:X0+W/2,y:Y0+40,"text-anchor":"middle","font-weight":"600"},"Quantity of framed pictures");
+    var bep=p>u?f/(p-u):null;
+    if(bep!==null&&bep<=QMAX){
+      el("polygon",{points:[x(0),y(0),x(bep),y(p*bep),x(bep),y(f+u*bep),x(0),y(f)].join(" "),fill:"#A12A2A",opacity:.10});
+      el("polygon",{points:[x(bep),y(p*bep),x(QMAX),y(p*QMAX),x(QMAX),y(f+u*QMAX)].join(" "),fill:"#1E6B43",opacity:.12});
+      el("text",{x:x(bep/2),y:y(f)-8,"text-anchor":"middle",fill:"#A12A2A","font-weight":"700"},"Loss");
+      el("text",{x:x((bep+QMAX)/2)+30,y:y((p*((bep+QMAX)/2)+f+u*((bep+QMAX)/2))/2)+5,"text-anchor":"middle",fill:"#1E6B43","font-weight":"700"},"Profit");
+    }
+    el("line",{x1:x(0),y1:y(f),x2:x(QMAX),y2:y(f),stroke:"#7A5B0C","stroke-width":2.5,"stroke-dasharray":"8 5"});
+    el("line",{x1:x(0),y1:y(f),x2:x(QMAX),y2:y(f+u*QMAX),stroke:"#A12A2A","stroke-width":3.5});
+    el("line",{x1:x(0),y1:y(0),x2:x(QMAX),y2:y(p*QMAX),stroke:"#1E6B43","stroke-width":3.5});
+    // legend
+    var lg=[["#1E6B43","Total revenue",""],["#A12A2A","Total cost",""],["#7A5B0C","Fixed cost","8 5"]];
+    lg.forEach(function(l,k){var ly=18+k*18;el("line",{x1:X0+10,y1:ly,x2:X0+36,y2:ly,stroke:l[0],"stroke-width":3,"stroke-dasharray":l[2]});el("text",{x:X0+42,y:ly+4},l[1]);});
+    if(bep!==null&&bep<=QMAX){
+      el("line",{x1:x(bep),y1:Y0,x2:x(bep),y2:y(p*bep),stroke:"#0B1D3A","stroke-dasharray":"4 4"});
+      el("circle",{cx:x(bep),cy:y(p*bep),r:8,fill:"#D9AE45",stroke:"#0B1D3A","stroke-width":2.5});
+      el("text",{x:x(bep)+12,y:y(p*bep)+22,"font-weight":"700"},"BEP "+Math.ceil(bep).toLocaleString());
+    }
+    el("line",{x1:x(q),y1:Y0,x2:x(q),y2:Y0-H,stroke:"#1A5FD0","stroke-width":2});
+    el("text",{x:Math.min(x(q)+6,X0+W-70),y:Y0-H+14,fill:"#1A5FD0","font-weight":"700"},"Q = "+q.toLocaleString());
+    var tr=p*q,vc=u*q,tc=f+vc,pr=tr-tc;
+    $("#be-stats").innerHTML=
+      '<div class="stat"><div class="k">Break-even point</div><div class="v">'+(bep===null?"Never":Math.ceil(bep).toLocaleString()+" frames")+'</div></div>'+
+      '<div class="stat"><div class="k">Total revenue</div><div class="v">'+money(tr)+'</div></div>'+
+      '<div class="stat"><div class="k">Total cost</div><div class="v">'+money(tc)+'</div></div>'+
+      '<div class="stat '+(pr>=0?"pos":"neg")+'"><div class="k">'+(pr>=0?"Profit":"Loss")+' at Q</div><div class="v">'+money(pr)+'</div></div>';
+    $("#be-desc").textContent="Fixed cost "+money(f)+", price "+money(p)+", unit variable cost "+money(u)+". "+(bep===null?"Price is not above unit variable cost, so the shop never breaks even.":"Total revenue and total cost cross at the break-even point of "+Math.ceil(bep)+" frames.")+" At "+q+" frames, "+(pr>=0?"profit":"loss")+" is "+money(Math.abs(pr))+".";
+    var rows=[0,400,800,1200,1600,2000];
+    var t='<table><caption>Revenue, cost, and profit at selected quantities</caption><thead><tr><th scope="col">Quantity</th><th scope="col">Total revenue</th><th scope="col">Variable cost</th><th scope="col">Fixed cost</th><th scope="col">Total cost</th><th scope="col">Profit</th></tr></thead><tbody>';
+    rows.forEach(function(r){t+='<tr><th scope="row" style="background:#fff;color:var(--ink);text-align:left">'+r.toLocaleString()+'</th><td>'+money(p*r)+'</td><td>'+money(u*r)+'</td><td>'+money(f)+'</td><td>'+money(f+u*r)+'</td><td>'+money(p*r-f-u*r)+'</td></tr>';});
+    $("#be-table").innerHTML=t+'</tbody></table>';
+  }
+  [P,U,F,Q].forEach(function(r){r.addEventListener("input",draw);});
+  draw();
+  $("#be-ch-btn").addEventListener("click",function(){
+    var v=parseFloat($("#be-ch").value);var fb=$("#be-ch-fb");
+    if(isNaN(v)){fb.className="fb show bad";fb.textContent="Enter a dollar amount first.";return;}
+    S.bech=v;save();
+    if(Math.abs(v-140)<0.5){fb.className="fb show ok";fb.innerHTML=icon("i-check")+" <strong>$140. Nailed it.</strong> 320 = 32,000 ÷ (P − 40), so P − 40 = 100 and P = $140. Set the price slider to $140 to see it.";}
+    else{fb.className="fb show bad";fb.innerHTML=icon("i-x")+" Not quite. Rearrange the formula: P − UVC = FC ÷ BEP. What's 32,000 ÷ 320? Then add the $40 unit variable cost.";}
+  });
+})();
+
+/* ---------- Price premium ---------- */
+$("#pp-btn").addEventListener("click",function(){
+  var v=parseFloat($("#pp-in").value),fb=$("#pp-fb");
+  if(isNaN(v)){fb.className="fb show bad";fb.textContent="Enter a percentage first.";return;}
+  if(Math.abs(v-18.4)<=0.6){fb.className="fb show ok";fb.innerHTML=icon("i-check")+" <strong>About 18.4%.</strong> ($2.96 − $2.50) ÷ $2.50 = 0.184. That's close to the roughly 18.5% premium shown for Red Bull in the textbook's 2022 data.";$("#pp-2").classList.add("show");}
+  else{fb.className="fb show bad";fb.innerHTML=icon("i-x")+" Check your steps: subtract the benchmark from Red Bull's price, divide by the benchmark, then multiply by 100.";}
+});
+$("#pp-choice").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var v=b.getAttribute("data-v");
+  $$("#pp-choice .choice").forEach(function(x){var p=x===b;x.setAttribute("aria-pressed",p);x.classList.remove("right","wrong");if(p)x.classList.add(v==="above"?"right":"wrong");});
+  var fb=$("#pp-fb2");fb.className="fb show "+(v==="above"?"ok":"bad");
+  fb.innerHTML=v==="above"?icon("i-check")+" <strong>Above market.</strong> A positive premium means buyers pay extra for the brand. Red Bull's brand image, built on extreme sports and events, helps justify it.":icon("i-x")+" A positive premium means the brand costs <em>more</em> than the benchmark. Try again.";
+});
+
+/* ---------- RULES: objectives ---------- */
+var OBJ=[
+  {t:"Profit",s:"Managing for long-run profit, maximizing current profit, or hitting a target return (ROI, ROA).",ex:"A company accepts slim profits now to build loyal customers for years."},
+  {t:"Sales revenue",s:"Growing dollar sales, as long as profit stays acceptable.",ex:"A retailer focuses on total dollar sales during the holidays."},
+  {t:"Market share",s:"Winning a bigger slice of the market, measured in dollars or units.",ex:"Two energy drink brands fighting for the top spot on the shelf."},
+  {t:"Unit volume",s:"Selling a target number of units, often to keep factories running efficiently.",ex:"A carmaker pushes to sell enough cars to keep its plants busy."},
+  {t:"Survival",s:"Staying in business when demand drops or competition heats up.",ex:"An airline slashes fares just to cover costs during a downturn."},
+  {t:"Social responsibility",s:"Pricing that serves customers or society, not only the bottom line.",ex:"A drug company lowers prices for patients who can't afford medicine."}
+];
+var oe=$("#objectives");
+OBJ.forEach(function(o,i){
+  oe.insertAdjacentHTML("beforeend",'<button type="button" class="flip" aria-pressed="false" aria-label="'+esc(o.t)+'. Flip card for definition and example."><span class="inner"><span class="face front"><b>'+esc(o.t)+'</b><small>Tap to flip</small></span><span class="face back" aria-hidden="true"><span><strong>'+esc(o.t)+':</strong> '+esc(o.s)+'</span><span><em>Example:</em> '+esc(o.ex)+'</span></span></span></button>');
+});
+oe.addEventListener("click",function(e){var b=e.target.closest(".flip");if(!b)return;var on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);$(".back",b).setAttribute("aria-hidden",!on);$(".front",b).setAttribute("aria-hidden",on);if(on)announce($(".back",b).textContent);});
+
+var LEGAL=[
+  {t:"Two rival gas stations on the same corner secretly agree to both charge $3.89 a gallon.",a:"fix",icon:"i-fuel",why:"Competitors agreeing on prices is price fixing, which is illegal."},
+  {t:"A store tags a jacket \"Was $200, now $99!\" but never actually sold it for $200.",a:"dec",icon:"i-tag",why:"Misleading buyers with a fake \"original\" price is deceptive pricing."},
+  {t:"A huge chain sells below its cost in one town until the local shop closes, then raises prices.",a:"pred",icon:"i-cart",why:"Pricing low to drive out competitors and then raising prices is predatory pricing."},
+  {t:"A manufacturer charges two competing stores different prices for the same product in the same quantity, hurting competition.",a:"disc",icon:"i-scale",why:"Charging different buyers different prices in a way that harms competition is illegal price discrimination."}
+];
+classifier($("#legal-list"),$("#legal-score"),LEGAL,[{v:"fix",label:"Price fixing"},{v:"disc",label:"Price discrimination"},{v:"dec",label:"Deceptive pricing"},{v:"pred",label:"Predatory pricing"}],S.legal);
+
+$("#vid-carmax").innerHTML=videoCard("carmax");
+var DISC=[
+  {t:"Buy one suit, get one free.",a:"qty",icon:"i-cart",why:"Rewarding larger purchases is a quantity discount."},
+  {t:"Ski jackets are 40% off in April.",a:"seas",icon:"i-tag",why:"Discounts for buying out of season are seasonal discounts."},
+  {t:"A wholesaler gets 20% off list price for storing, selling, and shipping the product.",a:"trade",icon:"i-users",why:"Payment for performing marketing functions is a trade (functional) discount."},
+  {t:"A retailer pays its invoice within 10 days and gets 2% off.",a:"cash",icon:"i-coin",why:"Rewarding fast payment is a cash discount."},
+  {t:"The dealer takes $3,000 off a new car when you hand over your old one.",a:"tin",icon:"i-car",why:"A price cut for turning in a used product is a trade-in allowance."},
+  {t:"A snack brand cuts its price to a store that features the brand in a big end-of-aisle display.",a:"promo",icon:"i-target",why:"A reduction for doing advertising or display work is a promotional allowance."}
+];
+classifier($("#disc-list"),$("#disc-score"),DISC,[{v:"qty",label:"Quantity discount"},{v:"seas",label:"Seasonal discount"},{v:"trade",label:"Trade discount"},{v:"cash",label:"Cash discount"},{v:"tin",label:"Trade-in allowance"},{v:"promo",label:"Promotional allowance"}],S.disc);
+
+/* ---------- SCENARIOS ---------- */
+var SCEN=[
+  {id:"costco",co:"Costco",title:"The $1.50 Hot Dog",icon:"i-cart",video:"costco",tags:["Loss-leader pricing","Customary pricing","Value"],
+   brief:"Costco's hot dog and soda combo has cost <strong>$1.50</strong> since the 1980s. Hot dogs, buns, soda, and wages all cost more now. A new finance manager says, \"We lose money on every combo. Let's raise it to $2.50.\" You're the pricing strategist. What do you recommend?",
+   qs:[{q:"Your recommendation to Costco:",opts:[
+     {t:"Raise it to $2.50. Prices should always cover costs.",r:"bad",fb:"That's cost-oriented logic, and for most products it's right. But this hot dog isn't meant to make money. It pulls members in and signals \"Costco = value.\" A price hike could cost Costco far more in trust than it gains in hot dog profit."},
+     {t:"Keep it at $1.50. It's a loss leader that builds traffic and Costco's value image.",r:"ok",fb:"Exactly. The combo is a loss leader with a customary price. Members come for the $1.50 deal, then fill carts with higher-margin products and renew memberships. The hot dog \"loss\" is really a marketing investment."},
+     {t:"Drop the hot dog entirely to stop losing money.",r:"bad",fb:"This would remove one of Costco's most famous traffic builders and value symbols. Shoppers might wonder what else is changing."},
+     {t:"Raise it to $1.99. Odd-even pricing makes it feel cheap.",r:"part",fb:"Odd-even pricing is a smart tool, but here it misses the point. The famous, unchanging $1.50 price is the message. Even $1.99 breaks a 40-year promise."}]}],
+   note:"Name another company that uses a loss leader. What do they hope you'll buy once you're in the door?"},
+  {id:"uber",co:"Uber and Lyft",title:"Midnight on New Year's Eve",icon:"i-car",video:"uber",tags:["Dynamic pricing","Demand curve shift","Ethics"],
+   brief:"It's 12:15 a.m. on January 1. Thousands of people leave parties at the same moment. Uber's app shows a fare <strong>2.5 times</strong> the normal price for the same 3-mile ride.",
+   qs:[{q:"What happened to the demand curve for rides?",opts:[
+     {t:"The whole curve shifted right. More riders want rides at every price.",r:"ok",fb:"Right. A burst of riders shifts demand to the right. Uber responds with dynamic pricing, raising fares to ration rides and pull more drivers onto the road."},
+     {t:"Movement down the curve, because the price went up.",r:"bad",fb:"A movement along the curve happens when only the price changes. Here, something else changed first: everyone wanted a ride at once."},
+     {t:"Nothing. Demand stayed the same, and Uber simply raised its price.",r:"bad",fb:"Look at the situation: thousands of extra riders at the same moment. That's a change in demand."}]},
+    {q:"Where do you stand? Is surge pricing fair?",poll:true,opts:[
+     {t:"Fair. It's supply and demand, and it gets more drivers on the road.",fb:"Supporters argue that higher prices lure more drivers out late at night, so more people get home. The price signals scarcity, and riders choose whether the ride is worth it."},
+     {t:"Unfair. It's price gouging when people need help most.",fb:"Critics argue that charging much more during emergencies or peak need takes advantage of people with no alternatives. Some cities and states limit surge pricing during declared emergencies."},
+     {t:"It depends on the situation: a party is different from a hurricane.",fb:"Many people land here. This is the ethical constraint in action. A price can be legal and still damage trust. Companies must weigh profit against how customers and the public will react."}]}],
+   note:"Defend your position in 2–3 sentences. Use the term \"demand curve\" or \"dynamic pricing.\""},
+  {id:"energizer",co:"Energizer",title:"The Bunny's Dilemma",icon:"i-battery",tags:["Price-quality perception","Value","Prestige pricing"],
+   brief:"Energizer launched an improved, longer-lasting <strong>Advanced Formula</strong> battery at the <strong>same price</strong> as its standard battery, hoping buyers would see it as a great deal. Instead, the brand <strong>lost market share</strong>. Shoppers figured a battery that cheap couldn't be special.",
+   qs:[{q:"What should Energizer do next?",opts:[
+     {t:"Cut the price even lower to win shoppers back.",r:"bad",fb:"That would reinforce the problem. Shoppers already linked a low price with low quality."},
+     {t:"Spend more on ads but keep the same price.",r:"part",fb:"Ads help, but they fight against the signal the price is sending. The price itself needed to communicate quality."},
+     {t:"Launch a high-performance battery priced above Duracell and above its own Advanced Formula.",r:"ok",fb:"That's what Energizer did. The higher price signaled quality, and Energizer recovered lost sales and market share. Lesson: value is in the eye of the beholder."},
+     {t:"Bundle a free flashlight with every pack.",r:"part",fb:"Bundling can add value, but it doesn't fix the core perception that the battery itself is ordinary."}]}],
+   note:"Name a product you assume is better because it costs more. Is it actually better?"},
+  {id:"apple",co:"Apple",title:"Launch Day",icon:"i-tablet",video:"skim",tags:["Skimming pricing","Penetration pricing","Product life cycle"],
+   brief:"Apple is launching a new iPad with features nobody else has yet. Fans line up on day one, and rivals will need about a year to copy the features. Meanwhile, a <em>different</em> company is launching a brand-new streaming service into a crowded market against Netflix, Disney+, and others.",
+   qs:[{q:"Which approach fits Apple's new iPad?",opts:[
+     {t:"Penetration pricing: start low to grab the mass market.",r:"bad",fb:"Starting low leaves money on the table. Eager early adopters would gladly pay more, and there's no competitor to beat yet."},
+     {t:"Skimming pricing: start high for eager early buyers, then lower it over time.",r:"ok",fb:"Yes. Innovative product, eager buyers, and no near-term rivals make the classic skimming setup. Newer products in the early life cycle usually carry higher prices."},
+     {t:"Loss-leader pricing: sell it below cost to sell more apps.",r:"bad",fb:"Apple's tablets are profit-makers on their own. Selling below cost would sacrifice the margin skimming captures."}]},
+    {q:"Which approach fits the new streaming service?",opts:[
+     {t:"Prestige pricing: charge the most so it seems premium.",r:"bad",fb:"An unknown brand in a crowded market can't easily command a premium. Viewers will just stick with what they have."},
+     {t:"Skimming pricing: charge high to the most eager viewers first.",r:"bad",fb:"There aren't eager early adopters for a me-too service. Viewers already have many choices."},
+     {t:"Penetration pricing: start with a low intro price to win subscribers fast.",r:"ok",fb:"Right. Penetration pricing builds a large customer base quickly in a market where buyers are price-sensitive (elastic) and switching is easy."}]}],
+   note:"Think of a product that used penetration pricing to break into a market. Did the price go up later?"},
+  {id:"spirit",co:"Spirit Airlines",title:"The Bare Fare",icon:"i-plane",tags:["Price equation","Value pricing","Unbundling"],
+   brief:"Spirit Airlines built its brand on bare-bones fares and charging extra for everything else. You're flying to Orlando with a carry-on bag and want to sit with your friend. <em>Illustrative prices:</em> Spirit's bare fare is <strong>$59</strong>, a carry-on bag is <strong>$45</strong>, and seat selection is <strong>$20</strong>. A rival airline charges <strong>$139</strong>, with a carry-on and seat choice included.",
+   qs:[{q:"Use the price equation (Final price = list price − discounts + extra fees). What's your final Spirit price?",num:124,unit:"$",fbOk:"Correct: $59 + $45 + $20 = $124. That's $15 less than the rival's $139, even with add-ons.",fbBad:"Add every fee to the bare fare: $59 + bag + seat."},
+    {q:"Is Spirit's model \"value pricing\" for you?",opts:[
+     {t:"It depends on which benefits each traveler values.",r:"ok",fb:"Right. For a traveler with just a backpack, it's great value. For someone who expects comfort and included extras, it isn't. The same price can be value pricing for some customers and not for others."},
+     {t:"Always yes. The lowest fare is always the best value.",r:"bad",fb:"Value = perceived benefits ÷ price. If you'd hate the tight seats and fees, the benefits drop, and so does the value."},
+     {t:"Never. Fees are always a rip-off.",r:"bad",fb:"Many travelers love paying only for what they use. Unbundling lets price-sensitive customers fly cheaply."}]}],
+   note:"When is paying more for an \"all-included\" price the better value for you?"}
+];
+var scNav=$("#scen-nav"),scBody=$("#scen-body");
+function scenDone(s){return s.qs.every(function(q,qi){var a=S.scen[s.id+"-"+qi];return a!=null;});}
+function renderScenNav(){
+  scNav.innerHTML=SCEN.map(function(s,i){return '<button type="button" data-i="'+i+'"'+(i===S.scenIdx?' aria-current="true"':'')+'>'+icon(s.icon)+esc(s.co)+(scenDone(s)?' <span class="chk">'+icon("i-check")+'<span class="sr-only"> completed</span></span>':'')+'</button>';}).join("");
+}
+function optClass(r,poll){return poll?"sel-info":(r==="ok"?"sel-ok":"sel-bad");}
+function renderScen(focus){
+  var s=SCEN[S.scenIdx];renderScenNav();
+  var h='<div class="case-head"><div class="case-badge">'+icon(s.icon)+'</div><div><div class="co">Case '+(S.scenIdx+1)+' of '+SCEN.length+' · '+esc(s.co)+'</div><h3 id="case-title" tabindex="-1">'+esc(s.title)+'</h3></div></div>';
+  h+='<div class="brief"><strong>The brief:</strong> '+s.brief+'</div>';
+  if(s.video)h+=videoCard(s.video);
+  s.qs.forEach(function(q,qi){
+    var key=s.id+"-"+qi, ans=S.scen[key];
+    if(q.num!=null){
+      h+='<fieldset><legend>'+esc(q.q)+'</legend><div class="row"><span aria-hidden="true">$</span><label class="sr-only" for="n-'+key+'">Final price in dollars</label><input type="number" id="n-'+key+'" style="max-width:9rem" value="'+(ans!=null?esc(ans):"")+'" inputmode="decimal"><button class="btn" type="button" data-num="'+key+'">Check</button></div><div class="fb'+(ans!=null?(" show "+(Math.abs(ans-q.num)<0.5?"ok":"bad")):"")+'" role="status" id="fb-'+key+'">'+(ans!=null?(Math.abs(ans-q.num)<0.5?icon("i-check")+" "+q.fbOk:icon("i-x")+" "+q.fbBad):"")+'</div></fieldset>';
+    } else {
+      h+='<fieldset><legend>'+esc(q.q)+(q.poll?' <span class="pill">Opinion: no wrong answer</span>':'')+'</legend>';
+      q.opts.forEach(function(o,oi){
+        var sel=ans===oi;
+        h+='<label class="opt'+(sel?" "+optClass(o.r,q.poll):"")+'"><input type="radio" name="r-'+key+'" value="'+oi+'"'+(sel?" checked":"")+'><span>'+esc(o.t)+'</span></label>';
+      });
+      var fo=ans!=null?q.opts[ans]:null;
+      h+='<div class="fb'+(fo?(" show "+(q.poll?"info":(fo.r==="ok"?"ok":"bad"))):"")+'" role="status" id="fb-'+key+'">'+(fo?fbHtml(fo,q.poll):"")+'</div></fieldset>';
+    }
+  });
+  h+='<div class="tags"><strong>Concepts in play:</strong> '+s.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>';}).join("")+'</div>';
+  h+='<label class="field" for="note-'+s.id+'" style="margin-top:1rem">'+icon("i-chat")+' Strategist\'s note: '+esc(s.note)+'</label><textarea id="note-'+s.id+'">'+esc(S.scenNotes[s.id]||"")+'</textarea>';
+  h+='<div class="row" style="justify-content:space-between;margin-top:1rem"><button class="btn ghost" type="button" id="sc-prev"'+(S.scenIdx===0?" disabled":"")+'>'+icon("i-arrow-l")+'Previous case</button>'+(S.scenIdx<SCEN.length-1?'<button class="btn" type="button" id="sc-next">Next case'+icon("i-arrow-r")+'</button>':'<button class="btn gold" type="button" id="sc-debrief">Go to Debrief'+icon("i-arrow-r")+'</button>')+'</div>';
+  scBody.innerHTML=h;
+  if(focus)$("#case-title").focus();
+}
+function fbHtml(o,poll){
+  if(poll)return icon("i-bulb")+" "+esc(o.fb);
+  var lead=o.r==="ok"?icon("i-check")+" <strong>Strong call.</strong> ":(o.r==="part"?icon("i-bulb")+" <strong>Partly there.</strong> ":icon("i-x")+" <strong>Rethink this.</strong> ");
+  return lead+esc(o.fb);
+}
+scNav.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;S.scenIdx=+b.getAttribute("data-i");save();renderScen(true);});
+scBody.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.type==="radio"){
+    var key=t.name.slice(2),parts=key.split("-"),qi=+parts.pop(),sid=parts.join("-");
+    var s=SCEN.filter(function(x){return x.id===sid;})[0],q=s.qs[qi],oi=+t.value,o=q.opts[oi];
+    S.scen[key]=oi; if(S.scenFirst[key]==null)S.scenFirst[key]=q.poll?"poll":o.r; save();
+    var fs=t.closest("fieldset");
+    $$(".opt",fs).forEach(function(l){l.className="opt";});
+    t.closest(".opt").classList.add(optClass(o.r,q.poll));
+    var fb=$("#fb-"+key);fb.className="fb show "+(q.poll?"info":(o.r==="ok"?"ok":"bad"));fb.innerHTML=fbHtml(o,q.poll);
+    renderScenNav();
+  }
+});
+scBody.addEventListener("input",function(e){if(e.target.id&&e.target.id.indexOf("note-")===0){S.scenNotes[e.target.id.slice(5)]=e.target.value;save();}});
+scBody.addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  if(b.id==="sc-prev"){S.scenIdx--;save();renderScen(true);}
+  else if(b.id==="sc-next"){S.scenIdx++;save();renderScen(true);}
+  else if(b.id==="sc-debrief"){show(panels.indexOf($("#s-debrief")),true);}
+  else if(b.hasAttribute("data-num")){
+    var key=b.getAttribute("data-num"),parts=key.split("-"),qi=+parts.pop(),sid=parts.join("-");
+    var q=SCEN.filter(function(x){return x.id===sid;})[0].qs[qi];
+    var v=parseFloat($("#n-"+key).value),fb=$("#fb-"+key);
+    if(isNaN(v)){fb.className="fb show bad";fb.textContent="Enter a number first.";return;}
+    var ok=Math.abs(v-q.num)<0.5; S.scen[key]=v; if(S.scenFirst[key]==null)S.scenFirst[key]=ok?"ok":"bad"; save();
+    fb.className="fb show "+(ok?"ok":"bad");fb.innerHTML=(ok?icon("i-check")+" "+q.fbOk:icon("i-x")+" "+q.fbBad);renderScenNav();
+  }
+});
+renderScen(false);
+
+/* ---------- DEBRIEF ---------- */
+function renderRecord(){
+  var tot=0,ok=0;
+  $("#record").innerHTML=SCEN.map(function(s){
+    var parts=s.qs.map(function(q,qi){return S.scenFirst[s.id+"-"+qi];}).filter(function(x){return x!=null&&x!=="poll";});
+    var graded=s.qs.filter(function(q){return !q.poll;}).length;
+    var good=parts.filter(function(x){return x==="ok";}).length;
+    tot+=graded; ok+=good;
+    var started=s.qs.some(function(q,qi){return S.scenFirst[s.id+"-"+qi]!=null;});
+    var st=!started?'<span class="st" style="color:var(--muted)">Not started</span>':(good===graded?'<span class="st" style="color:var(--ok)">'+icon("i-check")+' '+good+'/'+graded+' on first try</span>':'<span class="st" style="color:var(--gold-ink)">'+icon("i-bulb")+' '+good+'/'+graded+' on first try</span>');
+    return '<li>'+icon(s.icon)+'<span><strong>'+esc(s.co)+'</strong>: '+esc(s.title)+'</span>'+st+'</li>';
+  }).join("");
+  $("#record-sum").textContent="First-try strategy calls: "+ok+" of "+tot+". "+(ok===tot?"Sharp instincts!":"Review the cases where your first call missed. What concept would have helped?");
+}
+function workText(){
+  var L=["PRICE LAB, CHAPTER 11: STRATEGIST'S WORK","Name: "+(S.name||"(not entered)"),"Date: "+new Date().toLocaleDateString(),""];
+  L.push("WARM UP REFLECTION:",S.txt.warmReflect||"","");
+  SCEN.forEach(function(s){L.push("CASE: "+s.co+" ("+s.title+")");s.qs.forEach(function(q,qi){var a=S.scen[s.id+"-"+qi];L.push("  Q: "+q.q);L.push("  A: "+(a==null?"(no answer)":(q.num!=null?"$"+a:q.opts[a].t)));});L.push("  Strategist's note: "+(S.scenNotes[s.id]||""),"");});
+  L.push("DEBRIEF 1 (Driving question):",S.txt.d1||"","","DEBRIEF 2 (Case that changed my thinking):",S.txt.d2||"","","DEBRIEF 3 (Product I bought):",S.txt.d3||"","");
+  if(S.quiz.submitted)L.push("QUICK REVIEW BEST SCORE: "+S.quiz.best+" / 12");
+  return L.join("\n");
+}
+$("#btn-copy").addEventListener("click",function(){
+  var t=workText(),st=$("#copy-status");
+  function fallback(){var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="absolute";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy");}catch(e){}document.body.removeChild(ta);st.textContent=ok?"Copied! Paste it into your assignment.":"Copy didn't work here. Try Download instead.";}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent="Copied! Paste it into your assignment.";},fallback);}else fallback();
+});
+$("#btn-dl").addEventListener("click",function(){
+  var blob=new Blob([workText()],{type:"text/plain"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="PriceLab-Ch11-"+(S.name||"strategist").replace(/[^a-z0-9]+/gi,"-")+".txt";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  $("#copy-status").textContent="Download started.";
+});
+
+/* ---------- QUIZ (answer key spread: A3 B3 C3 D3) ---------- */
+var QUIZ=[
+  {q:"Value is best described as:",o:["Perceived benefits divided by price","Price divided by cost","Price minus cost","Benefits minus cost"],a:0,ex:"Value = perceived benefits ÷ price. It's what you get compared with what you pay."},
+  {q:"A new gaming headset with patented technology launches at a high price for eager fans, and the price drops a year later. This is:",o:["Penetration pricing","Prestige pricing","Skimming pricing","Loss-leader pricing"],a:2,ex:"Skimming starts with the highest price early adopters will pay, then lowers it over time."},
+  {q:"A grocery store sells milk below its usual price to draw shoppers in, hoping they'll buy other items. This is:",o:["Customary pricing","Loss-leader pricing","Bundle pricing","Standard markup pricing"],a:1,ex:"A loss leader is priced low to attract customers who'll buy higher-markup products too."},
+  {q:"Fixed cost is $32,000, price is $120, and unit variable cost is $40. What's the break-even point?",o:["267 units","800 units","320 units","400 units"],a:3,ex:"BEP = FC ÷ (P − UVC) = 32,000 ÷ 80 = 400 units."},
+  {q:"Red Baron lowers its price from $8 to $6 and sells more pizzas, with nothing else changing. This is:",o:["A movement along the demand curve","A shift of the demand curve to the right","A shift of the demand curve to the left","A pricing constraint"],a:0,ex:"When only price changes, quantity moves along the existing demand curve."},
+  {q:"Which of these is a fixed cost?",o:["Raw materials","Sales commissions","Direct labor per unit","Rent on the building"],a:3,ex:"Rent stays the same no matter how many units are sold. The others rise with each unit."},
+  {q:"A 10% price cut leads to a 25% increase in quantity sold. Demand for this product is:",o:["Inelastic","Elastic","Fixed","Customary"],a:1,ex:"Quantity changed by a larger percentage than price, so demand is elastic."},
+  {q:"Uber charging higher fares when many riders request rides at once is an example of:",o:["A one-price policy","Customary pricing","Dynamic pricing","Everyday low pricing"],a:2,ex:"Dynamic pricing sets different prices depending on buyers and situations."},
+  {q:"Competing companies secretly agreeing to charge the same price is:",o:["Price fixing","Predatory pricing","Price discrimination","Deceptive pricing"],a:0,ex:"Price fixing is an illegal agreement among competitors on price."},
+  {q:"Pricing a product at $19.99 instead of $20.00 is:",o:["Prestige pricing","Bundle pricing","Odd-even pricing","Target return pricing"],a:2,ex:"Odd-even pricing sets prices a few cents or dollars under an even number."},
+  {q:"A manufacturer gives a wholesaler a reduction for storing and shipping its products. This is a:",o:["Cash discount","Trade (functional) discount","Seasonal discount","Trade-in allowance"],a:1,ex:"Trade discounts reward intermediaries for performing marketing functions."},
+  {q:"A company cuts prices just to cover its costs during a sharp drop in demand. Its pricing objective is:",o:["Market share","Social responsibility","Unit volume","Survival"],a:3,ex:"When the goal is simply staying in business, the objective is survival."}
+];
+var LET=["A","B","C","D"];
+function renderQuiz(){
+  var f=$("#quiz"),sub=S.quiz.submitted;
+  var h='';
+  QUIZ.forEach(function(q,i){
+    var a=S.quiz.a[i];
+    h+='<fieldset id="qf-'+i+'"><legend><span class="qnum">Q'+(i+1)+'.</span> '+esc(q.q)+'</legend>';
+    q.o.forEach(function(o,j){
+      var cls="";
+      if(sub){if(j===q.a)cls=" sel-ok";else if(a===j)cls=" sel-bad";}
+      h+='<label class="opt'+cls+'"><input type="radio" name="q'+i+'" value="'+j+'"'+(a===j?" checked":"")+(sub?" disabled":"")+'><span><strong>'+LET[j]+'.</strong> '+esc(o)+(sub&&j===q.a?' <span class="sr-only">(correct answer)</span>':'')+'</span></label>';
+    });
+    if(sub){var ok=a===q.a;h+='<div class="fb show '+(ok?"ok":"bad")+'">'+(ok?icon("i-check")+" <strong>Correct.</strong> ":icon("i-x")+" <strong>Answer: "+LET[q.a]+".</strong> ")+esc(q.ex)+'</div>';}
+    h+='</fieldset>';
+  });
+  if(!sub) h+='<div class="row"><button type="submit" class="btn gold">'+icon("i-check")+'Submit my answers</button><span id="quiz-msg" role="status" aria-live="polite"></span></div>';
+  else{
+    var pass=S.quiz.score>=9;
+    h+='<div class="fb show '+(pass?"ok":"bad")+'" id="quiz-result" tabindex="-1"><p class="quiz-result">'+(pass?icon("i-trophy"):icon("i-bulb"))+' You scored '+S.quiz.score+' / 12.</p><p style="margin:0">'+(pass?"Certificate unlocked! Head to the last section to claim it.":"You need 9 to unlock the certificate. Review the explanations above, then try again.")+'</p></div><div class="row" style="margin-top:1rem"><button type="button" class="btn ghost" id="quiz-retry">'+icon("i-reset")+'Retake the review</button>'+(pass?'<button type="button" class="btn gold" id="quiz-cert">'+icon("i-trophy")+'Claim my certificate</button>':'')+'</div>';
+  }
+  f.innerHTML=h;
+}
+$("#quiz").addEventListener("change",function(e){if(e.target.name&&e.target.name[0]==="q"){S.quiz.a[+e.target.name.slice(1)]=+e.target.value;save();}});
+$("#quiz").addEventListener("submit",function(e){
+  e.preventDefault();
+  var missing=QUIZ.map(function(q,i){return S.quiz.a[i]==null?i+1:null;}).filter(function(x){return x;});
+  if(missing.length){$("#quiz-msg").textContent="Please answer question"+(missing.length>1?"s ":" ")+missing.join(", ")+".";$("#qf-"+(missing[0]-1)+" input").focus();return;}
+  var sc=0;QUIZ.forEach(function(q,i){if(S.quiz.a[i]===q.a)sc++;});
+  S.quiz.submitted=true;S.quiz.score=sc;S.quiz.best=Math.max(S.quiz.best||0,sc);save();
+  renderQuiz();$("#quiz-result").focus();
+  if(sc>=9)burst();
+});
+$("#quiz").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  if(b.id==="quiz-retry"){S.quiz.a={};S.quiz.submitted=false;save();renderQuiz();$("#quiz input").focus();}
+  if(b.id==="quiz-cert"){show(panels.length-1,true);}
+});
+renderQuiz();
+
+/* ---------- CERTIFICATE ---------- */
+function renderCert(){
+  var area=$("#cert-area"),best=S.quiz.best||0;
+  if(best<9){
+    area.innerHTML='<div class="card locked">'+icon("i-lock")+'<h3>Certificate locked</h3><p>Score at least 9 out of 12 on the Quick Review to unlock it. Your best so far: <strong>'+best+' / 12</strong>.</p><button class="btn gold" type="button" id="go-quiz">'+icon("i-arrow-r")+'Go to Quick Review</button></div>';
+    $("#go-quiz").addEventListener("click",function(){show(panels.indexOf($("#s-review")),true);});return;
+  }
+  var nm=S.name||"";
+  var d=new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+  area.innerHTML=(nm?'':'<div class="card"><label class="field" for="cert-name">Enter your name for the certificate</label><div class="row"><input type="text" id="cert-name" style="max-width:24rem" autocomplete="name"><button class="btn" type="button" id="cert-name-btn">Add name</button></div></div>')+
+  '<div class="cert-wrap" id="certificate-print"><div class="cert" role="img" aria-label="Certificate of completion for '+esc(nm||"Strategist")+', Price Lab Chapter 11, score '+best+' of 12, dated '+d+'">'+
+  '<div class="small">Price Lab · Certificate of Completion</div>'+
+  '<p class="ctitle">Certified Pricing Strategist</p>'+
+  '<div class="small" style="margin-top:.6rem">This certifies that</div>'+
+  '<div class="cname">'+esc(nm||"Your Name Here")+'</div>'+
+  '<p style="max-width:56ch;margin:.3rem auto 0">successfully completed <strong>Chapter 11: Pricing Products and Services</strong>, analyzing real pricing decisions at Costco, Uber, Energizer, Apple, and Spirit Airlines, and earned a Quick Review score of <strong>'+best+' / 12</strong>.</p>'+
+  '<div class="sig"><div>'+esc(d)+'<br>Date</div><div>Instructor</div></div>'+
+  '<svg class="seal" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#0B1D3A" stroke="#D9AE45" stroke-width="4"/><circle cx="50" cy="50" r="36" fill="none" stroke="#D9AE45" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M50 26l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="#D9AE45"/><text x="50" y="84" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="#F3E3B5" letter-spacing="1">CH 11</text></svg>'+
+  '</div></div>'+
+  '<div class="row" style="justify-content:center;margin-top:1.2rem"><button class="btn gold" type="button" id="cert-print">'+icon("i-print")+'Print or save as PDF</button><button class="btn ghost" type="button" id="cert-party">'+icon("i-trophy")+'Celebrate again</button></div>'+
+  '<p style="text-align:center;color:var(--muted);font-size:.9rem;margin-top:.6rem">Tip: In the print window, choose "Save as PDF" to upload your certificate.</p>';
+  if(!nm){$("#cert-name-btn").addEventListener("click",function(){var v=$("#cert-name").value.trim();if(v){S.name=v;save();nameIn.value=v;renderCert();announce("Name added to certificate");}});}
+  $("#cert-print").addEventListener("click",function(){window.print();});
+  $("#cert-party").addEventListener("click",burst);
+  burst();
+}
+
+/* ---------- Confetti ---------- */
+function burst(){
+  if(reduceMotion)return;
+  var c=$("#confetti"),ctx=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  var cols=["#D9AE45","#F3E3B5","#0B1D3A","#1E6B43","#FFFFFF","#1A5FD0"],P=[];
+  for(var i=0;i<160;i++)P.push({x:innerWidth/2+(Math.random()-.5)*200,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:Math.random()*-12-4,s:Math.random()*8+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length],t:Math.random()<.5});
+  var f=0;(function loop(){ctx.clearRect(0,0,c.width,c.height);P.forEach(function(p){p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;if(p.t){ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);}else{ctx.beginPath();ctx.arc(0,0,p.s/3,0,7);ctx.fill();}ctx.restore();});
+    if(++f<170)requestAnimationFrame(loop);else ctx.clearRect(0,0,c.width,c.height);})();
+}
+
+/* ---------- Init ---------- */
+applyTeacher();applyFs();
+show(S.sec||0,false);
+})();
+</script>
+</body>
+</html>

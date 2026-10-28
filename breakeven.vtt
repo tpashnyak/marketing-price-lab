@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.350 --> 00:00:04.839
+Meet Jordan. She owns a picture-framing shop, and she has one burning question.
+
+2
+00:00:05.119 --> 00:00:08.504
+How many frames do I have to sell before I stop losing money?
+
+3
+00:00:09.454 --> 00:00:12.729
+First, the fixed costs. Rent, salaries, insurance.
+
+4
+00:00:13.009 --> 00:00:17.997
+Jordan pays $32,000 a year, whether she sells one frame or a thousand.
+
+5
+00:00:18.947 --> 00:00:24.678
+Next, variable costs. Each frame uses materials and labor, about $40 apiece.
+
+6
+00:00:24.958 --> 00:00:27.862
+And she sells each frame for $120.
+
+7
+00:00:28.812 --> 00:00:32.455
+So every frame leaves $80 to chip away at those fixed costs.
+
+8
+00:00:32.735 --> 00:00:36.032
+Divide $32,000 by $80, and you get 400.
+
+9
+00:00:36.982 --> 00:00:39.737
+Sell 400 frames, and Jordan breaks even.
+
+10
+00:00:40.017 --> 00:00:44.056
+Frame number 401? That's her first $80 of profit.
+
+11
+00:00:45.006 --> 00:00:47.155
+Now head to the break-even simulator.
+
+12
+00:00:47.435 --> 00:00:50.357
+Change the price, and watch the break-even point move.

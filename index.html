@@ -13,9 +13,9 @@
   Aligned to Kerin & Hartley, Marketing: The Core (2024 Release), Chapter 11.
   Single-file, no build step. Drop into a GitHub repo as index.html and enable GitHub Pages.
 
-  EDITING VIDEOS: see the VIDEOS object near the top of the <script>. Each video has a YouTube id.
-  Set id: "" to hide the player and show only the written "Story in brief" summary
-  (useful where YouTube is blocked). Preview every video before class.
+  EDITING VIDEOS: see the VIDEOS object near the top of the <script>. Each video is a short
+  AI-narrated MP4 in the repo with a matching .vtt caption file and -poster.jpg. Self-hosted, so they
+  play even where video sites are blocked. Set src: "" to show only the written summary.
 -->
 <style>
 :root{
@@ -149,7 +149,9 @@ input[type=range]{width:100%;accent-color:var(--navy)}
 /* Video */
 .video{border-radius:14px;overflow:hidden;background:var(--navy);color:#fff;margin:1rem 0}
 .video .frame{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 30% 30%,var(--navy-3),var(--navy))}
-.video .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video .frame iframe,.video .frame video{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--navy)}
+.video video::cue{font-family:"IBM Plex Sans",sans-serif;font-size:1.05em;background:rgba(11,29,58,.88);color:#fff}
+.video .vlen{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.04em;color:#DCE3F0;background:rgba(255,255,255,.1);border-radius:999px;padding:.15rem .55rem;margin-left:.3rem;white-space:nowrap}
 .video .poster{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;font:inherit;padding:1rem;text-align:center}
 .video .poster .play{width:72px;height:72px;flex:none;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;transition:transform .2s}
 .video .poster:hover .play,.video .poster:focus-visible .play{transform:scale(1.1)}
@@ -392,7 +394,7 @@ footer{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 3rem;color:var(--muted
         </div>
         <label class="field" for="student-name">Strategist name(s)</label>
         <input type="text" id="student-name" autocomplete="name" placeholder="e.g., Jordan Lee">
-        <p style="margin-top:1rem;font-size:.92rem;color:var(--muted)">Your progress saves in this browser automatically, so you can come back later.</p>
+        <p style="margin-top:1rem;font-size:.92rem;color:var(--muted)">Your answers clear when you leave or refresh this page. Before you go, use <strong>Copy my work</strong> or <strong>Download my work</strong> in the Debrief to keep your reflections.</p>
         <h3 style="margin-top:1rem">How Price Lab works</h3>
         <div class="row">
           <span class="pill">1 · Warm Up</span><span class="pill">2 · Learn the tools</span><span class="pill">3 · Run the numbers</span><span class="pill">4 · Solve real cases</span><span class="pill">5 · Debrief and review</span><span class="pill">6 · Earn your certificate</span>
@@ -663,7 +665,7 @@ footer{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 3rem;color:var(--muted
 </div>
 
 <footer>
-  Price Lab · Chapter 11: Pricing Products and Services. Concepts aligned to Kerin &amp; Hartley, <cite>Marketing: The Core</cite> (2024 Release), Chapter 11. Company examples are for educational discussion. Figures labeled "illustrative" are simplified for practice. Videos are hosted by YouTube and its creators.
+  Price Lab · Chapter 11: Pricing Products and Services. Concepts aligned to Kerin &amp; Hartley, <cite>Marketing: The Core</cite> (2024 Release), Chapter 11. Company examples are for educational discussion. Figures labeled "illustrative" are simplified for practice. Mini-videos are original to Price Lab and narrated with an AI voice.
 </footer>
 <div id="sr-announce" class="sr-only" aria-live="assertive"></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
@@ -673,38 +675,48 @@ footer{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 3rem;color:var(--muted
 "use strict";
 
 /* =========================================================
-   VIDEO LIBRARY — edit ids/titles here. Set id:"" to show
-   only the written summary (no player).
+   VIDEO LIBRARY — short AI-narrated videos stored in /videos.
+   Each has an .mp4, a .vtt caption file, and a -poster.jpg.
+   Set src:"" to show only the written summary (no player).
    ========================================================= */
 var VIDEOS = {
-  prestige:{id:"O7AOg7M-ezA", company:"Rolex", title:"Why Rolex Watches Are So Expensive",
-    watch:"Listen for how scarcity and status, not just materials, support a sky-high price.",
+  prestige:{src:"prestige.mp4", company:"Rolex", title:"Why Rolex Can Charge So Much", length:"0:59",
+    watch:"Listen for the three things that make a high price feel right, and the twist about what happens when the price drops.",
+    transcript:"Quick question. Why would anyone pay more for a watch than for a used car? It tells the same time as your phone. And your phone has games. Welcome to prestige pricing. That's when a company sets a high price on purpose, because buyers see the high price as part of what they're buying. Rolex builds that feeling three ways. First, scarcity. Popular models can be hard to find, and some buyers wait months, or even years. Second, status. Wearing one tells everyone at the barbecue that you've made it. Third, quality. Fine craftsmanship gives buyers a reason to believe the price. Here's the twist. For most products, a lower price brings in more buyers. For prestige products, cut the price too far, and demand can actually drop. If everyone can afford it, it isn't special anymore. So the price isn't just covering costs. It's part of the brand. Your turn. Name another product people buy partly because it's expensive.",
     brief:"Rolex keeps prices high on purpose. Limited supply, long waitlists, and a reputation for quality make a high price part of what buyers want. For status-conscious buyers, a lower price could actually reduce demand. That's prestige pricing."},
-  odd:{id:"pvF4kFPE8U4", company:"Retail everywhere", title:"Why Do So Many Price Tags End in .99?",
+  odd:{src:"odd.mp4", company:"Retail everywhere", title:"Why Do Price Tags End in .99?", length:"0:46",
     watch:"Notice the 'left-digit effect': why $19.99 feels closer to $10 than $20.",
+    transcript:"Be honest. Does $19.99 feel a lot cheaper than $20? It's one penny. One. Penny. Your brain reads prices left to right, and it gets a little lazy. It sees the one, decides it's nineteen-something, and stops paying attention. Marketers call this the left-digit effect. Pricing just below a round number is called odd-even pricing. That's why Carmex, gas stations, and almost every store you know love the number nine. But there's a flip side. Luxury brands often skip the nines and use round numbers, like $200 flat. Round prices feel premium, not bargain bin. Next time you shop, play detective. Count the nines, and ask what the price is trying to make you feel.",
     brief:"Shoppers read prices left to right, so $19.99 registers as 'nineteen-something.' Pricing a few cents or dollars below a round number (odd-even pricing) makes a product feel like a bargain, which is why Carmex and most retailers end prices in 9."},
-  skim:{id:"vq5PlqSBsVk", company:"Tech launches", title:"Penetration Pricing vs. Price Skimming Explained",
+  skim:{src:"skim.mp4", company:"Tech launches", title:"Skimming vs. Penetration Pricing", length:"0:55",
     watch:"Compare who each strategy targets first: eager early adopters or the mass market.",
+    transcript:"A brand-new gadget is about to launch, and you get to set the price. High, or low? Both can be smart. It depends on who you want to win over first. Option one. Price skimming. Start high to capture the early adopters, the people who camp outside the store because they need it on day one. Then, as the excitement cools, lower the price step by step to reach the next group of buyers. Option two. Penetration pricing. Start low to grab a big share of the mass market, fast. Low prices scare off competitors, and turn new customers into loyal ones. So when does each one work? Skimming fits when the product is new and special, and buyers will pay extra to get it first. Penetration fits when buyers are price sensitive, and selling a lot quickly lowers your cost per unit. Your turn. Think of the last product launch you saw. Was it skimming, or penetration? What's your evidence?",
     brief:"Skimming starts high to capture buyers who want the newest thing now, then lowers the price over time. Penetration starts low to grab a big share of the mass market fast, scaring off competitors and building loyalty."},
-  breakeven:{id:"vUT8lZLZpKg", company:"Small business", title:"Break-Even Analysis Explained",
-    watch:"Track how fixed and variable costs combine into total cost.",
+  breakeven:{src:"breakeven.mp4", company:"Small business", title:"Break-Even Analysis Explained", length:"0:51",
+    watch:"Track how fixed and variable costs combine, and how the $80 per frame pays them off.",
+    transcript:"Meet Jordan. She owns a picture-framing shop, and she has one burning question. How many frames do I have to sell before I stop losing money? First, the fixed costs. Rent, salaries, insurance. Jordan pays $32,000 a year, whether she sells one frame or a thousand. Next, variable costs. Each frame uses materials and labor, about $40 apiece. And she sells each frame for $120. So every frame leaves $80 to chip away at those fixed costs. Divide $32,000 by $80, and you get 400. Sell 400 frames, and Jordan breaks even. Frame number 401? That's her first $80 of profit. Now head to the break-even simulator. Change the price, and watch the break-even point move.",
     brief:"Every unit sold earns its price minus its variable cost. That amount chips away at fixed costs. Once those are fully covered, at the break-even point, every additional unit adds profit."},
-  costco:{id:"kOf0Pdi4C5I", company:"Costco", title:"Why Costco Refuses to Raise the Price of Its Hot Dog",
+  costco:{src:"costco.mp4", company:"Costco", title:"Why Costco Won't Raise the Price of Its Hot Dog", length:"0:53",
     watch:"Ask yourself: what is Costco really selling with a $1.50 hot dog?",
+    transcript:"Since 1985, a Costco hot dog and soda has cost $1.50. Gas went up. Rent went up. Maybe even your allowance went up. The hot dog? Still $1.50. Costco earns very little on every combo, and it may even lose money. So why keep the price frozen? Because the hot dog isn't really the product. It's the hook. A super-cheap item that pulls shoppers into the store is called a loss leader. Once you're inside, you grab a giant tub of cashews, a sixty-pack of batteries, and maybe a kayak. And because the price never changes, it's also a customary price, one that people expect to stay the same. Raising it would feel like breaking a promise. The real profit comes from everything else members buy, and from renewing their memberships every year. Your turn. What other store uses a loss leader to get you in the door?",
     brief:"Costco's hot dog and soda combo has cost $1.50 since the 1980s, even as costs rose. Costco treats it as a symbol of value that brings members into stores, where they buy higher-margin items and renew memberships. That's a loss leader with a customary price."},
-  uber:{id:"TtAHctHMOyk", company:"Uber", title:"Uber Surge Pricing Explained by an Uber Driver Economist",
-    watch:"Listen for what happens to supply (drivers) and demand (riders) when prices surge.",
+  uber:{src:"uber.mp4", company:"Uber", title:"Surge Pricing, Explained", length:"0:53",
+    watch:"Listen for what happens to supply (drivers) and demand (riders) when fares surge.",
+    transcript:"It's twelve-oh-one on New Year's Day. The fireworks are over, and everybody wants a ride home. At the exact same time. You open the app, and... whoa. That's surge pricing, a type of dynamic pricing, where the price changes with demand in real time. Here's the economics. Thousands of riders want cars at once, so the demand curve shifts to the right. If fares stayed the same, there'd be way more riders than drivers, and long waits for everybody. Higher fares do two things. They pull more drivers onto the road, and they ration rides to the riders who value them most right now. Critics say it's price gouging, charging people more when they have no choice. Supporters say it gets more cars on the road, exactly when you need them. Your turn. Is surge pricing fair? Pick a side, and defend it with economics.",
     brief:"When many riders want rides at once, such as after a concert or on New Year's Eve, demand shifts right. Uber raises fares to encourage more drivers to log on and to ration rides to people who value them most. Critics call it price gouging. Supporters say it gets more cars on the road."},
-  carmax:{id:"", company:"CarMax", title:"CarMax: The No-Haggle Price",
-    watch:"",
+  carmax:{src:"carmax.mp4", company:"CarMax", title:"CarMax: The No-Haggle Price", length:"0:42",
+    watch:"Listen for how a one-price policy differs from dynamic pricing, and who wins with each.",
+    transcript:"Picture the classic car lot. You argue. The salesperson goes to check with the manager. You argue some more. Two hours later, you're not even sure who won. CarMax flipped that script with a one-price policy. The sticker price is the price, for every single buyer. No haggling. That's the opposite of dynamic pricing, where the price changes depending on the buyer and the situation, like surge fares or airline seats. One-price policies feel fair and simple, and they save a lot of time. The trade-off? Skilled negotiators lose their chance to score a better deal. Your turn. Would you rather haggle, or just see one fair price? Explain who wins with each policy.",
     brief:"CarMax uses a one-price policy: the sticker price is the price for every buyer, with no haggling. Compare that with a dynamic pricing policy, where the price changes depending on the buyer and the situation."}
 };
 
 /* ---------- Storage (safe) ---------- */
 var KEY="priceLabCh11.v1";
 var S={name:"",sec:0,visited:{0:true},bottle:{},names:{},barter:null,sort:{},el:{},legal:{},disc:{},pp:null,ppc:null,bech:null,scen:{},scenFirst:{},scenNotes:{},txt:{},quiz:{a:{},submitted:false,score:0,best:0},teacher:false,fs:0,scenIdx:0};
-try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o){S[k]=o[k];}}}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+/* Answers live only while the page is open: nothing is saved, and any data from older versions is wiped. */
+try{localStorage.removeItem(KEY);}catch(e){}
+function save(){}
+window.addEventListener("pagehide",function(){try{localStorage.removeItem(KEY);sessionStorage.clear();}catch(e){}});
 
 function $(s,r){return (r||document).querySelector(s);}
 function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
@@ -717,29 +729,28 @@ var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: 
 /* ---------- Video card ---------- */
 function videoCard(key){
   var v=VIDEOS[key]; if(!v) return "";
-  var hasId=!!v.id;
-  var h='<figure class="video'+(hasId?'':' noembed')+'" data-vid="'+esc(v.id)+'" data-title="'+esc(v.title)+'" style="margin-left:0;margin-right:0">';
-  if(hasId){
-    h+='<div class="frame"><button type="button" class="poster" aria-label="Play video: '+esc(v.title)+'"><span class="co">'+esc(v.company)+'</span><span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg></span><span class="vt">'+esc(v.title)+'</span></button></div>';
+  var has=!!v.src, base=has?v.src.replace(/\.mp4$/,""):"";
+  var h='<figure class="video'+(has?'':' noembed')+'" style="margin-left:0;margin-right:0">';
+  if(has){
+    h+='<div class="frame"><video controls playsinline preload="none" poster="'+esc(base)+'-poster.jpg" aria-label="Video: '+esc(v.title)+' ('+esc(v.length)+')">'+
+       '<source src="'+esc(v.src)+'" type="video/mp4">'+
+       '<track kind="captions" src="'+esc(base)+'.vtt" srclang="en" label="English" default>'+
+       'Your browser can\'t play this video. Read the transcript below.</video></div>';
   }
   h+='<figcaption class="meta">';
-  h+='<strong style="color:var(--gold)">'+icon("i-play")+' '+(hasId?'Watch: ':'Real-world connection: ')+esc(v.title)+'</strong>';
+  h+='<strong style="color:var(--gold)">'+icon("i-play")+' '+(has?'Watch: ':'Real-world connection: ')+esc(v.title)+'</strong>';
+  if(has) h+=' <span class="vlen">'+esc(v.length)+' · AI-narrated · captions on</span>';
   if(v.watch) h+='<p><strong>Watch for:</strong> '+esc(v.watch)+'</p>';
-  h+='<details'+(hasId?'':' open')+'><summary>Story in brief (text summary)</summary><p>'+esc(v.brief)+'</p></details>';
-  if(hasId) h+='<p style="margin:.4rem 0 0;font-size:.88rem"><a href="https://www.youtube.com/watch?v='+encodeURIComponent(v.id)+'" target="_blank" rel="noopener">Open on YouTube<span class="sr-only"> (opens in a new tab)</span></a> · Turn on captions with the CC button.</p>';
+  h+='<details'+(has?'':' open')+'><summary>Story in brief (text summary)</summary><p>'+esc(v.brief)+'</p></details>';
+  if(v.transcript) h+='<details><summary>Full transcript</summary><p>'+esc(v.transcript)+'</p></details>';
   h+='</figcaption></figure>';
   return h;
 }
-document.addEventListener("click",function(e){
-  var p=e.target.closest&&e.target.closest(".poster"); if(!p) return;
-  var fig=p.closest(".video"); var id=fig.getAttribute("data-vid");
-  var f=document.createElement("iframe");
-  f.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0&autoplay=1&cc_load_policy=1";
-  f.title="Video: "+fig.getAttribute("data-title");
-  f.allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture";
-  f.allowFullscreen=true;
-  p.replaceWith(f); f.focus();
-});
+/* Only one video plays at a time */
+document.addEventListener("play",function(e){
+  if(e.target.tagName!=="VIDEO") return;
+  $$("video").forEach(function(o){if(o!==e.target&&!o.paused)o.pause();});
+},true);
 
 /* ---------- Sections / navigation ---------- */
 var panels=$$("section.panel");
@@ -777,7 +788,7 @@ var fsNames=["normal","large","extra large"];
 function applyFs(){document.documentElement.classList.remove("fs-1","fs-2");if(S.fs)document.documentElement.classList.add("fs-"+S.fs);$("#btn-font").setAttribute("aria-label","Change text size. Current: "+fsNames[S.fs]);}
 $("#btn-font").addEventListener("click",function(){S.fs=(S.fs+1)%3;save();applyFs();announce("Text size "+fsNames[S.fs]);});
 $("#btn-reset").addEventListener("click",function(){
-  if(window.confirm("Start over? This clears your answers and notes saved in this browser.")){try{localStorage.removeItem(KEY);}catch(e){} location.reload();}
+  if(window.confirm("Start over? This clears all your answers and notes.")){location.reload();}
 });
 
 /* ---------- Name & free text ---------- */
